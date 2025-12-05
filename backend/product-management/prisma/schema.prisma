@@ -6,9 +6,69 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  uid          Int       @id @default(autoincrement())
+  username    String    @unique
+  password    String
+  isseller    Boolean?
+  products    Product[] @relation("sellerProducts")
+  purchases   Order[]   @relation("buyerOrders")
+
+  @@map("users")
+}
+
+model Product {
+  pid          Int       @id @default(autoincrement())
+  pname       String    @unique
+  stock       Int      
+  price       Decimal   @db.Decimal(10, 2)
+  categoryId  Int
+  sellerId    Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  category    Category  @relation(fields: [categoryId], references: [cid])
+  seller      User      @relation("sellerProducts", fields:[sellerId], references: [uid])
+  OrderItems  OrderItem[]
+
+  @@map("products")
+}
+
+model Category {
+  cid          Int      @id @default(autoincrement())
+  cname       String   @unique
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Order {
+  oid          Int      @id @default(autoincrement())
+  totalAmount  Decimal  @db.Decimal(10,2)
+  status       String   @default("pending")
+
+  userId       Int
+  user         User     @relation("buyerOrders",fields:[userId],references:[uid])
+  items        OrderItem[]
+  createdAt    DateTime @default(now())
+
+  @@map("orders")
+}
+
+model OrderItem {
+  oiid         Int      @id @default(autoincrement())
+  quantity     Int
+
+  orderId      Int
+  order        Order    @relation(fields:[orderId],references:[oid])
+
+  productId    Int
+  product     Product   @relation(fields: [productId], references: [pid])
+
+  @@map("order_items")
 }
