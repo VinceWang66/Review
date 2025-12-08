@@ -6,8 +6,8 @@ export class CreateUserDto {
     @IsNotEmpty({message:'用户名不能为空'})
     @MinLength(2, {message:'用户名不能少于两位'})
     @MaxLength(20, {message:'用户名不能多余20个字符'})
-    @Matches(/^(?=.*[A-Za-z])(?=.*\d)/, {
-        message: '密码必须包含字母和数字'
+    @Matches(/^[a-zA-Z0-9_]+$/, {
+        message: '用户名必须包含字母和数字'
       })
     @ApiProperty({ 
         description: '用户名（唯一）',
@@ -19,7 +19,7 @@ export class CreateUserDto {
     @IsNotEmpty({message:'密码不能为空'})
     @MinLength(6, {message:'密码不能小于6位'})
     @MaxLength(30, {message:'密码不能超过30个字符'})
-    @Matches(/^(?=.*[A-Za-z])(?=.*\d)/, {
+    @Matches(/^[a-zA-Z0-9_]+$/, {
         message: '密码必须包含字母和数字'
       })
     @ApiProperty({

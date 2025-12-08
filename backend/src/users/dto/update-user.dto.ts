@@ -7,7 +7,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     @IsOptional()
     @MinLength(6, { message: '密码至少6个字符' })
     @MaxLength(30, { message: '密码不能超过30个字符' })
-    @Matches(/^(?=.*[A-Za-z])(?=.*\d)/, {
+    @Matches(/^[a-zA-Z0-9_]+$/, {
         message: '密码必须包含字母和数字'
     })
     @ApiProperty({ 
