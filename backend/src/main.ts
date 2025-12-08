@@ -16,6 +16,7 @@ async function bootstrap() {
     .setTitle('RestfulApI')
     .setDescription('To implement CRUD')
     .setVersion('0.1')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
