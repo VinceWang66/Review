@@ -5,8 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated"
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -18,8 +18,8 @@ model User {
   uid          Int      @id @default(autoincrement())
   username    String    @unique
   password    String
-  email       String
-  isseller    Boolean?
+  email       String    @unique
+  isseller    Boolean   @default(false)
   products    Product[] @relation("sellerProducts")
   purchases   Order[]   @relation("buyerOrders")
 
