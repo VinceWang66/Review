@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto, OrderItemDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { PrismaService  } from 'src/prisma/prisma.service';
-import { Decimal } from '@prisma/client/runtime/index-browser';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class OrdersService {
