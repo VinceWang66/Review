@@ -7,6 +7,7 @@ import { UserEntity } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RegisterEntity } from './entities/register.entity';
 import { RegisterDto } from './dto/register-user.dto';
+import { JwtAdminGuard } from 'src/admin/jwt-admin.guard';
 
 @Controller('users')
 @ApiTags('users')
@@ -14,15 +15,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard, JwtAdminGuard)
+  @ApiBearerAuth()
   @ApiCreatedResponse({ type: UserEntity })
   async create(@Body() createUserDto: CreateUserDto) {
     return new UserEntity(await this.usersService.create(createUserDto));
   }
 
   @Post('register')
-  @ApiCreatedResponse({ 
+  @ApiCreatedResponse({
     type: RegisterEntity,
-    description: '注册用户' 
+    description: '注册用户'
   })
   async register(@Body() registerDto: RegisterDto) {
     return new RegisterEntity(await this.usersService.register(registerDto));

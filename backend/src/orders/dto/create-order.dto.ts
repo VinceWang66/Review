@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsArray, ArrayMinSize, IsNumber, Min, ValidateNested } from "class-validator";
+import { IsArray, ArrayMinSize, IsNumber, Min, ValidateNested, IsString } from "class-validator";
 
 export class CreateOrderDto {
-    @IsNumber()
-    @ApiProperty({description:'用户id'})
-    userId:number;
+    @IsString()
+    @ApiProperty({ required: false, default:'pending', description:'订单状态'})
+    status?:string;
 
     @IsArray()
     @ArrayMinSize(1, { message: '订单至少要一个商品' })

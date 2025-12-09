@@ -6,6 +6,7 @@ import {
   import { PrismaService } from './../prisma/prisma.service';
   import { JwtService } from '@nestjs/jwt';
   import { AuthEntity } from './entity/auth.entity';
+  import * as bcrypt from 'bcrypt';
   
   @Injectable()
   export class AuthService {
@@ -21,7 +22,13 @@ import {
       }
   
       // Step 2: Check if the password is correct
-      const isPasswordValid = user.password === password;
+      // 明文与加密双兼容（开发期临时方案）
+      let isPasswordValid = false;
+      if (user.password.startsWith('$2b$') || user.password.startsWith('$2a$')) {
+        isPasswordValid = await bcrypt.compare(password, user.password);
+      } else {
+        isPasswordValid = user.password === password;
+      }
   
       // If password does not match, throw an error
       if (!isPasswordValid) {
@@ -30,7 +37,7 @@ import {
   
       // Step 3: Generate a JWT containing the user's ID and return it
       return {
-        accessToken: this.jwtService.sign({ userId: user.uid }),
+        accessToken: this.jwtService.sign({ userId: user.uid, role: user.role, isseller: user.isseller }),
       };
     }
   }

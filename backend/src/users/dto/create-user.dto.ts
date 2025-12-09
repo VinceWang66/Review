@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength, IsEnum } from "class-validator";
 
 export class CreateUserDto {
     @IsString()
@@ -37,8 +37,8 @@ export class CreateUserDto {
       })
     email: string;
 
-    @IsBoolean()
+    @IsEnum(['user','seller','admin'], { message: 'role必须是user/seller/admin' })
     @IsOptional()
-    @ApiProperty({required:false, default: false, description:'是否为卖家'})
-    isseller?: boolean
+    @ApiProperty({enum:['user','seller','admin'], required:false, default:'user', description:'用户角色'})
+    role?: string;
 }

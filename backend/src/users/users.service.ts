@@ -16,9 +16,16 @@ export class UsersService {
       createUserDto.password,
       roundsOfHashing,
     );
-
     createUserDto.password = hashedPassword;
-    return this.prisma.user.create({data: createUserDto});
+    const role = (createUserDto.role || 'user').toLowerCase();
+    // isseller 只在数据入库时动态赋值
+    return this.prisma.user.create({
+      data: {
+        ...createUserDto,
+        role,
+        isseller: role === 'seller',
+      }
+    });
   }
 
   findAll() {
@@ -26,7 +33,10 @@ export class UsersService {
   }
 
   async findOne(uid: number) {
-    const user = await this.prisma.user.findUnique({where: { uid:uid }})
+    const user = await this.prisma.user.findUnique({
+      where: { uid: uid },
+      select: { uid: true, username: true, email: true, password: true, isseller: true, role: true },
+    })
     if(!user){
       throw new NotFoundException(`用户 ${uid} 不存在`);
     }
@@ -40,7 +50,11 @@ export class UsersService {
         roundsOfHashing,
       );
     }
-    return this.prisma.user.update({where: { uid }, data:updateUserDto});
+    const data: any = { ...updateUserDto };
+    if (updateUserDto.role !== undefined) {
+      data.isseller = updateUserDto.role === 'seller';
+    }
+    return this.prisma.user.update({ where: { uid }, data });
   }
 
   remove(uid: number) {
@@ -49,22 +63,22 @@ export class UsersService {
   
   //另外使用register方法确保用户不会自己添加商家选项
   async register(registerDto: RegisterDto) {
-    // 哈希密码
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-    
-    // 直接创建（唯一约束错误会被全局过滤器处理）
+    // 注册仅普通用户，isseller和role
     return this.prisma.user.create({
       data: {
         username: registerDto.username,
         password: hashedPassword,
         email: registerDto.email,
-        isseller: false,  // 新用户默认不是卖家
+        isseller: false,
+        role: 'user',
       },
-      select: {  // 不返回敏感信息
+      select: {
         uid: true,
         username: true,
         email: true,
-        isseller: true
+        isseller: true,
+        role: true,
       }
     });
   }

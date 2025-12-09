@@ -1,0 +1,16 @@
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
+
+@Injectable()
+export class JwtSellerGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+    if (!user) {
+      throw new ForbiddenException('请先登录');
+    }
+    if (!(user.role === 'seller' || user.isseller === true)) {
+      throw new ForbiddenException('需要商家身份');
+    }
+    return true;
+  }
+}

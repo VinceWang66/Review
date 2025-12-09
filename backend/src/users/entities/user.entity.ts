@@ -21,5 +21,8 @@ export class UserEntity implements User{
     
     @ApiProperty()
     isseller: boolean;
+
+    @ApiProperty()
+    role: string;
 }
 

@@ -20,6 +20,7 @@ model User {
   password    String
   email       String    @unique
   isseller    Boolean   @default(false)
+  role        String    @default("user")
   products    Product[] @relation("sellerProducts")
   purchases   Order[]   @relation("buyerOrders")
 
