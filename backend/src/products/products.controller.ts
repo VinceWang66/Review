@@ -6,7 +6,6 @@ import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagge
 import { ProductEntity } from './entities/product.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { JwtSellerGuard } from 'src/seller/jwt-seller.guard';
-import { PurchaseCartDto } from './dto/purchase-product.dto';
 import { SinglePurchaseDto } from './dto/single-purchase.dto';
 
 @Controller('products')

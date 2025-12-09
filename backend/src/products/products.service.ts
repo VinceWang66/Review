@@ -67,6 +67,7 @@ export class ProductsService {
     if (product.stock < quantity) {
       throw new BadRequestException(`库存不足，当前库存: ${product.stock}`);
     }
+
     return await this.prisma.$transaction(async (prisma) => {
       const updatedProduct = await prisma.product.update({
         where: { pid: id },
@@ -76,29 +77,29 @@ export class ProductsService {
           },
         }
       });
-      const totalPrice = Number(product.price) * quantity;
-      const order = await prisma.order.create({
-        data: {
-          userId: userId,
-          totalAmount: totalPrice,
-          status: 'paid'
-        }
-      });
-      await prisma.orderItem.create({
-        data: {
-          orderId: order.oid,
-          productId: id,
-          quantity: quantity,
-        }
-      });
+      // const totalPrice = Number(product.price) * quantity;
+      // const order = await prisma.order.create({
+      //   data: {
+      //     userId: userId,
+      //     totalAmount: totalPrice,
+      //     status: 'paid'
+      //   }
+      // });
+      // await prisma.orderItem.create({
+      //   data: {
+      //     orderId: order.oid,
+      //     productId: id,
+      //     quantity: quantity,
+      //   }
+      // });
       return {
         success: true,
         message: '购买成功',
-        product: { id: product.pid, stock: product.stock - quantity },
-        order: {
-          oid: order.oid,
-          totalAmount: order.totalAmount
-        }
+        product: { id: product.pid, stock: updatedProduct.stock },
+        // order: {
+        //   oid: order.oid,
+        //   totalAmount: order.totalAmount
+        // }
       };
     })
   }
