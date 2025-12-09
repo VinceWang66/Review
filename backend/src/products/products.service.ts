@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService  } from 'src/prisma/prisma.service';
@@ -55,6 +55,9 @@ export class ProductsService {
   }
 
   async purchase(id: number, quantity: number, userId: number){
+    if (userId === undefined || userId === null) {
+      throw new UnauthorizedException('请先登录');
+    }
     const product = await this.prisma.product.findUnique({
       where:{ pid:id }
     })
@@ -100,50 +103,53 @@ export class ProductsService {
     })
   }
 
-  async purchaseCart(items: PurchaseItemDto[], userId: number) {
-    if (!items.length) {
-      throw new BadRequestException('购物车不能为空');
-    }
-    const orderItems: PurchaseItemDto[] = [];
-    let totalAmount = 0;
-    for (const item of items) {
-      const product = await this.prisma.product.findUnique({ where: { pid: item.productId } });
-      if (!product) {
-        throw new BadRequestException(`商品ID${item.productId}不存在`);
-      }
-      if (product.stock < item.quantity) {
-        throw new BadRequestException(`商品ID${item.productId}库存不足，目前库存${product.stock}`);
-      }
-      orderItems.push({ productId: item.productId, quantity: item.quantity });
-      totalAmount += Number(product.price) * item.quantity;
-    }
-    return await this.prisma.$transaction(async (prisma) => {
-      const order = await prisma.order.create({
-        data: {
-          userId,
-          totalAmount,
-          status: 'paid',
-        }
-      });
-      for (const item of orderItems) {
-        await prisma.orderItem.create({
-          data: {
-            orderId: order.oid,
-            productId: item.productId,
-            quantity: item.quantity
-          }
-        });
-        await prisma.product.update({
-          where: { pid: item.productId },
-          data: { stock: { decrement: item.quantity } }
-        });
-      }
-      return {
-        success: true,
-        message: '批量下单成功',
-        order: { oid: order.oid, totalAmount },
-        items: orderItems
-      };
-    });
-  }
+  // async purchaseCart(items: PurchaseItemDto[], userId: number) {
+  //   if (userId === undefined || userId === null) {
+  //     throw new UnauthorizedException('请先登录');
+  //   }
+  //   if (!items.length) {
+  //     throw new BadRequestException('购物车不能为空');
+  //   }
+  //   const orderItems: PurchaseItemDto[] = [];
+  //   let totalAmount = 0;
+  //   for (const item of items) {
+  //     const product = await this.prisma.product.findUnique({ where: { pid: item.productId } });
+  //     if (!product) {
+  //       throw new BadRequestException(`商品ID${item.productId}不存在`);
+  //     }
+  //     if (product.stock < item.quantity) {
+  //       throw new BadRequestException(`商品ID${item.productId}库存不足，目前库存${product.stock}`);
+  //     }
+  //     orderItems.push({ productId: item.productId, quantity: item.quantity });
+  //     totalAmount += Number(product.price) * item.quantity;
+  //   }
+  //   return await this.prisma.$transaction(async (prisma) => {
+  //     const order = await prisma.order.create({
+  //       data: {
+  //         userId,
+  //         totalAmount,
+  //         status: 'paid',
+  //       }
+  //     });
+  //     for (const item of orderItems) {
+  //       await prisma.orderItem.create({
+  //         data: {
+  //           orderId: order.oid,
+  //           productId: item.productId,
+  //           quantity: item.quantity
+  //         }
+  //       });
+  //       await prisma.product.update({
+  //         where: { pid: item.productId },
+  //         data: { stock: { decrement: item.quantity } }
+  //       });
+  //     }
+  //     return {
+  //       success: true,
+  //       message: '批量下单成功',
+  //       order: { oid: order.oid, totalAmount },
+  //       items: orderItems
+  //     };
+  //   });
+  // }
 }

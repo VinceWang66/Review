@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { ProductEntity } from './entities/product.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { JwtSellerGuard } from 'src/seller/jwt-admin.guard';
+import { JwtSellerGuard } from 'src/seller/jwt-seller.guard';
 import { PurchaseCartDto } from './dto/purchase-product.dto';
 import { SinglePurchaseDto } from './dto/single-purchase.dto';
 
@@ -54,15 +54,26 @@ export class ProductsController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: ProductEntity })
   purchase(@Param('id') id: string, @Body() purchaseProductDto: SinglePurchaseDto, @Req() req) {
-    const userId = req.user.userId;
+    const userId = req.user.uid;
+    if (!userId) {
+      console.error("无法获取用户ID，用户对象:", req.user);
+      throw new UnauthorizedException('无法获取用户信息');
+    }
     return this.productsService.purchase(+id, purchaseProductDto.quantity, userId);
   }
 
-  @Post('purchase')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiCreatedResponse({type: Object, description:'批量下单'})
-  purchaseCart(@Body() dto: PurchaseCartDto, @Req() req) {
-    return this.productsService.purchaseCart(dto.items, req.user.userId);
-  }
+  // @Patch('purchase')
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth()
+  // @ApiCreatedResponse({type: Object, description:'批量下单'})
+  // purchaseCart(@Body() dto: PurchaseCartDto, @Req() req) {
+  //   const userId = req.user.uid;
+  
+  // if (!userId) {
+  //   console.error('批量购买 - 无法获取用户ID，用户对象:', req.user);
+  //   throw new UnauthorizedException('无法获取用户信息');
+  // }
+  
+  // return this.productsService.purchaseCart(dto.items, userId);
+  // }
 }

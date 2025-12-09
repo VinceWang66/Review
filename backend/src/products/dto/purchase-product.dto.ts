@@ -6,6 +6,7 @@ export class PurchaseItemDto {
     @IsNumber()
     @ApiProperty({ description: '商品ID' })
     productId: number;
+    
     @IsNumber()
     @Min(1, {message:'商品数量至少为1'})
     @ApiProperty({ description: '购买数量' })
