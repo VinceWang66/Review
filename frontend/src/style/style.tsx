@@ -26,7 +26,7 @@ export const Style = {
         // 错误提示
         error: {
           color: 'red',
-          fontSize: '12px',
+          fontSize: '16px',
           marginTop: '4px'
         },
         

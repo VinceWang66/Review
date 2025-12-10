@@ -7,6 +7,13 @@ import { PrismaClientExceptionFilter } from './prisma-client-exception/prisma-cl
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
+  app.enableCors({
+    origin: 'http://localhost:5173', // 前端地址
+    credentials: true, // 允许携带凭证（如cookies）
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  });
+
   app.useGlobalPipes(new ValidationPipe({ whitelist:true }));
   app.useGlobalFilters(new PrismaClientExceptionFilter());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
