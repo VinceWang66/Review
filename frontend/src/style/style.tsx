@@ -1,5 +1,7 @@
 
 export const Style = {
+        
+    //登录注册相关样式
         // 图标
         icon: {
           display: 'block',
@@ -40,5 +42,36 @@ export const Style = {
         button: {
           width: '32%'
         },
-        
+    
+    //商品管理相关样式
+        //覆盖项目css默认样式
+        override:{
+            position: 'absolute' as const,
+            top: 0,
+            left: 0,
+            width: '100%',
+            minHeight: '100vh',
+            display: 'block'
+        },
+
+        //商品管理栏样式
+        manager:{
+            border: '2px solid lightgrey',
+            padding:'10px',
+            marginLeft:'5%',
+            width: '90%',
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+            marginTop: 20
+        },
+
+        //商品栏样式
+        product:{
+            padding: '20px',
+            border: '1px solid #f0f0f0',
+            borderRadius: '8px',
+            marginBottom: '16px',
+            backgroundColor: '#fafafa'
+        }
       };

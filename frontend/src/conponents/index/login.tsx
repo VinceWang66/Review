@@ -1,6 +1,6 @@
 import { Input, Button } from "antd";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Style } from "../style/style";
+import { Style } from "../../style/style";
 import { useState } from "react";
 
 export function Login({onSwitch}:{onSwitch:()=>void}){

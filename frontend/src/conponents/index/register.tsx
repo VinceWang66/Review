@@ -1,7 +1,7 @@
 import { Input, Button } from "antd";
 import { EditOutlined, LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { useState } from "react";
-import { Style } from "../style/style";
+import { Style } from "../../style/style";
 
 export function Register({onSwitch}:{onSwitch:()=>void}){
     const[username,setUsername]=useState('');
