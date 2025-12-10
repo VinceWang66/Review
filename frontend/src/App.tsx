@@ -5,6 +5,9 @@ import { ProductList } from './conponents/product_manager/productList';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ProductAdd } from './conponents/product_manager/productAdd';
 import { ProductEdit } from './conponents/product_manager/productEdit';
+import { CategoryList } from './conponents/category_manager/categoryList';
+import { CategoryAdd } from './conponents/category_manager/categoryAdd';
+import { CategoryEdit } from './conponents/category_manager/categoryEdit';
 
 function App() {
   return(
@@ -15,6 +18,9 @@ function App() {
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/add" element={<ProductAdd />} />
         <Route path="/products/edit/:id" element={<ProductEdit />} />
+        <Route path="/category" element={<CategoryList/>}/>
+        <Route path="/category/add" element={<CategoryAdd />} />
+        <Route path="/category/edit/:id" element={<CategoryEdit />} />
         <Route path="/" element={<ProductList />} /> {/* 默认首页 */}
       </Routes>
     </BrowserRouter>

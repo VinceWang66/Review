@@ -2,15 +2,20 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiProperty } from '@nestjs/swagger';
 import { CategoryEntity } from './entities/category.entity';
 import { JwtAdminGuard } from 'src/admin/jwt-admin.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+class CountResult {
+  @ApiProperty({ description: '数量' })
+  count: number;
+}
+
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
-
+  
   @Post()
   @UseGuards(JwtAuthGuard, JwtAdminGuard)
   @ApiBearerAuth()
@@ -23,6 +28,12 @@ export class CategoriesController {
   @ApiOkResponse({ type: CategoryEntity, isArray: true })
   findAll() {
     return this.categoriesService.findAll();
+  }
+
+  @Get(':id')
+  @ApiOkResponse({type: CountResult})
+  count(id: number){
+    return this.categoriesService.count(+id);
   }
 
   @Get(':id')
