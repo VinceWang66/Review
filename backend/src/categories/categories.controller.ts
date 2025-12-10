@@ -31,12 +31,6 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  @ApiOkResponse({type: CountResult})
-  count(id: number){
-    return this.categoriesService.count(+id);
-  }
-
-  @Get(':id')
   @ApiOkResponse({ type: CategoryEntity, isArray: true })
   findOne(@Param('id') id: string) {
     return this.categoriesService.findOne(+id);

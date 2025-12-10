@@ -11,10 +11,6 @@ export class CategoriesService {
     return this.prisma.category.create({data: createCategoryDto});
   }
 
-  count(id: number){
-    return this.prisma.category.count({where: { cid: id}})
-  }
-
   findAll() {
     return this.prisma.category.findMany();
   }
