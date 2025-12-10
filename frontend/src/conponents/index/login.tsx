@@ -2,8 +2,10 @@ import { Input, Button } from "antd";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Style } from "../../style/style";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export function Login({onSwitch}:{onSwitch:()=>void}){
+export function Login(){
+    const navigate = useNavigate();
     const[username,setUsername]=useState('');
     const[password,setPassword]=useState('');
     const[error,setError]=useState({
@@ -55,7 +57,7 @@ export function Login({onSwitch}:{onSwitch:()=>void}){
             <Input 
                 name="username"
                 size="large" placeholder="请输入用户名" prefix={<UserOutlined/>} style={Style.input}
-                onChange={e=>setUsername(e.target.value)}
+                onInput={(e:any)=>setUsername(e.target.value)}
             />
             {error.username && (
                 <div style={Style.error}>
@@ -65,7 +67,7 @@ export function Login({onSwitch}:{onSwitch:()=>void}){
             <Input 
                 name="password"
                 size="large" placeholder="请输入密码" prefix={<LockOutlined />} style={Style.input}
-                onChange={e=>setPassword(e.target.value)}
+                onInput={(e:any)=>setPassword(e.target.value)}
             />
             {error.password && (
                 <div style={Style.error}>
@@ -74,7 +76,7 @@ export function Login({onSwitch}:{onSwitch:()=>void}){
             )}
             <div style={Style.buttonContainer}>
             <Button htmlType="submit" type="primary" size="large" style={Style.button}>登录</Button>
-            <Button onClick={onSwitch} size="large" style={Style.button}>注册</Button>
+            <Button onClick={()=>navigate(`/register`)} size="large" style={Style.button}>注册</Button>
             </div>
             {!canSubmit && 
                 <div style={{textAlign: 'center' as const, ...Style.error}}>请按照要求填写内容</div>

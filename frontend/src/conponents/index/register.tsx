@@ -2,8 +2,10 @@ import { Input, Button } from "antd";
 import { EditOutlined, LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { useState } from "react";
 import { Style } from "../../style/style";
+import { useNavigate } from "react-router-dom";
 
-export function Register({onSwitch}:{onSwitch:()=>void}){
+export function Register(){
+    const navigate=useNavigate();
     const[username,setUsername]=useState('');
     const[password,setPassword]=useState('');
     const[email,setEmail]=useState('');
@@ -35,7 +37,7 @@ export function Register({onSwitch}:{onSwitch:()=>void}){
             return;
         }
         setCanSubmit(true);
-        onSwitch();
+        navigate(`/login`)
     }
     const judge = (name:string, value:string)=>{
         switch(name){
@@ -87,7 +89,7 @@ export function Register({onSwitch}:{onSwitch:()=>void}){
                     name="username"
                     size="large" placeholder="请输入用户名" prefix={<UserOutlined/>} style={Style.input}
                     onBlur={handleBlur}
-                    onChange={e=>setUsername(e.target.value)}
+                    onInput={(e:any)=>setUsername(e.target.value)}
                 />
                 {error.username && (
                     <div style={Style.error}>
@@ -98,7 +100,7 @@ export function Register({onSwitch}:{onSwitch:()=>void}){
                     name="password"
                     size="large" placeholder="请输入密码" prefix={<LockOutlined />} style={Style.input}
                     onBlur={handleBlur}
-                    onChange={e=>setPassword(e.target.value)} 
+                    onInput={(e:any)=>setPassword(e.target.value)}
                 />
                 {error.password && (
                     <div style={Style.error}>
@@ -109,7 +111,7 @@ export function Register({onSwitch}:{onSwitch:()=>void}){
                     name="email"
                     size="large" placeholder="请输入邮箱" prefix={<MailOutlined />} style={Style.input}
                     onBlur={handleBlur}
-                    onChange={e=>setEmail(e.target.value)}  
+                    onInput={(e:any)=>setEmail(e.target.value)}
                 />
                 {error.email && (
                     <div style={Style.error}>
@@ -118,7 +120,7 @@ export function Register({onSwitch}:{onSwitch:()=>void}){
                 )}
                 <div style={Style.buttonContainer}>
                 <Button htmlType="submit" type="primary" size="large" style={Style.button}>注册</Button>
-                <Button onClick={onSwitch} size="large" style={{backgroundColor:"lightgrey", ...Style.button}}>返回登陆</Button>
+                <Button onClick={()=>navigate(`/login`)} size="large" style={{backgroundColor:"lightgrey", ...Style.button}}>返回登陆</Button>
                 </div>
                 {!canSubmit && 
                     <div style={{textAlign: 'center' as const, ...Style.error}}>请按照要求填写内容</div>

@@ -1,8 +1,10 @@
 import { Button } from "antd";
 import { Style } from "../../style/style";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export function Product(){
+export function ProductList(){
+    const navigate=useNavigate();
     const[products,setProducts]=useState([{
         id: 1,
         name: 'iPhone 15 Pro',
@@ -40,7 +42,7 @@ export function Product(){
         <div style={Style.override}>
             <div style={{marginTop: 30}}><h1>商品列表</h1></div>
             <div style={Style.manager}>
-                <Button type="primary" style={{marginLeft:'5%',width:'64px'}}>添加商品</Button>
+                <Button onClick={()=>navigate(`/products/add`)} type="primary" style={{marginLeft:'5%',width:'64px'}}>添加商品</Button>
             </div>
             <div style={{
                 border: '2px solid lightgrey',
