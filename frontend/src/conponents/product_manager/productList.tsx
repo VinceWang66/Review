@@ -1,10 +1,11 @@
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { Style } from "../../style/style";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function ProductList(){
     const navigate=useNavigate();
+    const [deleteId, setDeleteId]=useState<number|null>(null);
     const[products,setProducts]=useState([{
         id: 1,
         name: 'iPhone 15 Pro',
@@ -97,7 +98,7 @@ export function ProductList(){
                                 >
                                     编辑
                                 </Button>
-                                <Button size="small" danger>
+                                <Button size="small" danger onClick={() => setDeleteId(product.id)}>
                                     删除
                                 </Button>
                             </div>
@@ -105,6 +106,19 @@ export function ProductList(){
                     </div>
                 ))}
             </div>
+            <Modal
+                title="确认删除"
+                open={deleteId !== null}
+                onOk={() => {
+                    setProducts(cats => cats.filter(c => c.id !== deleteId));
+                    setDeleteId(null);
+                }}
+                onCancel={() => setDeleteId(null)}
+                okText="确认"
+                cancelText="取消"
+            >
+                <p>确定要删除这个分类吗？</p>
+            </Modal>
         </div>
     )
 }

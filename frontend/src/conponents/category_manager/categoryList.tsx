@@ -1,11 +1,12 @@
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { Style } from "../../style/style";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export function CategoryList(){
     const navigate=useNavigate();
-    const[categories,setCategories]=useState([{
+    const [deleteId, setDeleteId]=useState<number|null>(null);
+    const [categories,setCategories]=useState([{
         id: 1,
         name: '日用百货',
         number: 10
@@ -70,7 +71,7 @@ export function CategoryList(){
                                 >
                                     编辑
                                 </Button>
-                                <Button size="small" danger>
+                                <Button size="small" danger onClick={() => setDeleteId(category.id)}>
                                     删除
                                 </Button>
                             </div>
@@ -78,6 +79,19 @@ export function CategoryList(){
                     </div>
                 ))}
             </div>
-        </div>
+            <Modal
+                title="确认删除"
+                open={deleteId !== null}
+                onOk={() => {
+                    setCategories(cats => cats.filter(c => c.id !== deleteId));
+                    setDeleteId(null);
+                }}
+                onCancel={() => setDeleteId(null)}
+                okText="确认"
+                cancelText="取消"
+            >
+                <p>确定要删除这个分类吗？</p>
+            </Modal>
+        </div> 
     )
 }
