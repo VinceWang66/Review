@@ -92,7 +92,10 @@ export function ProductList(){
                                 </span>
                             </div>
                             <div>
-                                <Button size="small" type="primary" style={{ marginRight: '8px' }}>
+                                <Button 
+                                    onClick={()=>navigate(`/products/edit/${product.id}`)}
+                                    size="small" type="primary" style={{ marginRight: '8px' }}
+                                >
                                     编辑
                                 </Button>
                                 <Button size="small" danger>

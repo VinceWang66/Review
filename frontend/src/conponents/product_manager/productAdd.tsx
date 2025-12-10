@@ -24,7 +24,7 @@ export function ProductAdd(){
     const handlechange = (field:string, value:string)=>{
         setProducts(p=>({...p,[field]:value}));
         if (error[field as keyof typeof error]) {
-            setError(prev => ({ ...prev, [field]: "" }));
+            setError(p => ({ ...p, [field]: "" }));
         }
     }
 
