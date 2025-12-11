@@ -32,3 +32,5 @@ export const authFetch = async (url:string, options:RequestInit={})=>{
     }
     return data;
 }
+
+export const getProducts = () => authFetch('/products', { method: 'GET' });

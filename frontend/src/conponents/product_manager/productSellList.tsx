@@ -1,71 +1,49 @@
 import { Button, Modal } from "antd";
 import { Style } from "../../style/style";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProducts } from "../../utils/api";
 
-export function ProductList(){
+export function ProductSellList(){
     const navigate=useNavigate();
     const [deleteId, setDeleteId]=useState<number|null>(null);
-    const [products,setProducts]=useState<any[]>([]);
-    const [error, setError]=useState('');
-    const [loading,setLoading]=useState(true);
-
-    useEffect(()=>{
-        getProducts()
-            .then(res=>{
-                console.log('商品价格结构:', res[0].price);
-                console.log('完整商品结构:', res[0]);
-                setProducts(res);
-                setError('');
-            })
-            .catch(err=>{
-                console.error("获取商品失败", err)
-                setError('获取商品列表失败，请稍后重试');
-            })
-            .finally(()=>{
-                setLoading(false);
-            })
-    },[])
-
-    const formatPrice = (priceObj: any) => {
-        if (!priceObj || !priceObj.d) return '0.00';
-        
-        // Decimal128 格式: { s: 1, e: 1, d: [29, 9900000] }
-        // d[0] 是整数部分，d[1] 是小数部分（可能有前导零）
-        
-        const integer = priceObj.d[0] || 0;
-        const fraction = priceObj.d[1] || 0;
-        
-        // 组合成完整价格
-        const price = parseFloat(`${integer}.${fraction.toString().padStart(7, '0')}`);
-        return price.toFixed(2); // 保留两位小数
-    };
-
+    const[products,setProducts]=useState([{
+        id: 1,
+        name: 'iPhone 15 Pro',
+        price: 8999,
+        description: 'A17 Pro芯片，钛金属设计，4800万像素主摄，USB-C接口',
+        stock: 128,
+        category: '电子产品'
+      },
+      {
+        id: 2,
+        name: 'MacBook Air',
+        price: 9999,
+        description: 'M3芯片，超薄设计，18小时电池续航',
+        stock: 56,
+        category: '笔记本电脑'
+      },
+      {
+        id: 3,
+        name: 'AirPods Pro',
+        price: 1899,
+        description: '主动降噪，空间音频，MagSafe充电盒',
+        stock: 200,
+        category: '音频设备'
+      },
+      {
+        id: 4,
+        name: 'AirPods Pro2',
+        price: 18999,
+        description: '牛啊牛啊',
+        stock: 2000,
+        category: '音频设备'
+      }])
     return(
         <div style={Style.override}>
             <div style={{marginTop: 30}}><h1>商品列表</h1></div>
-            {error && (
-                <div style={{
-                    margin: '0 5% 20px 5%',
-                    padding: '12px',
-                    backgroundColor: '#fff2f0',
-                    border: '1px solid #ffccc7',
-                    borderRadius: '6px',
-                    color: '#ff4d4f'
-                }}>
-                    ❌ {error}
-                </div>
-            )}
-            {loading && (
-                <div style={{
-                    textAlign: 'center',
-                    padding: '40px',
-                    color: '#999'
-                }}>
-                    加载中...
-                </div>
-            )}
+            <div style={Style.manager}>
+                <Button onClick={()=>navigate(`/products/add`)} type="primary" style={{marginLeft:'5%',width:'64px'}}>添加商品</Button>
+            </div>
             <div style={{
                 border: '2px solid lightgrey',
                 padding:'10px',
@@ -75,20 +53,20 @@ export function ProductList(){
             }}>
                 {products.map(product => (
                     <div
-                    key={product.pid} 
+                    key={product.id} 
                     style={Style.product}>
                         <div style={{ 
                             display: 'flex', 
                             justifyContent: 'space-between',
                             marginBottom: '12px' 
                         }}>
-                            <h3 style={{ margin: 0, color: '#1890ff' }}>{product.pname}</h3>
+                            <h3 style={{ margin: 0, color: '#1890ff' }}>{product.name}</h3>
                             <span style={{ 
                                 fontSize: '20px', 
                                 fontWeight: 'bold',
                                 color: '#fa541c'
                             }}>
-                                ¥{formatPrice(product.price)}
+                                ¥{product.price}
                             </span>
                         </div>
                         
@@ -110,7 +88,7 @@ export function ProductList(){
                                     库存: <strong>{product.stock}</strong>件
                                 </span>
                                 <span style={{ color: '#999' }}>
-                                    分类: <strong>{product.categoryId}</strong>
+                                    分类: <strong>{product.category}</strong>
                                 </span>
                             </div>
                             <div>
@@ -118,7 +96,10 @@ export function ProductList(){
                                     onClick={()=>navigate(`/products/edit/${product.id}`)}
                                     size="small" type="primary" style={{ marginRight: '8px' }}
                                 >
-                                    购买
+                                    编辑
+                                </Button>
+                                <Button size="small" danger onClick={() => setDeleteId(product.id)}>
+                                    删除
                                 </Button>
                             </div>
                         </div>

@@ -8,6 +8,7 @@ import { ProductEdit } from './conponents/product_manager/productEdit';
 import { CategoryList } from './conponents/category_manager/categoryList';
 import { CategoryAdd } from './conponents/category_manager/categoryAdd';
 import { CategoryEdit } from './conponents/category_manager/categoryEdit';
+import { ProductSellList } from './conponents/product_manager/productSellList';
 
 function App() {
   return(
@@ -16,6 +17,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/products" element={<ProductList />} />
+        <Route path="/products/seller" element={<ProductSellList />} />
         <Route path="/products/add" element={<ProductAdd />} />
         <Route path="/products/edit/:id" element={<ProductEdit />} />
         <Route path="/category" element={<CategoryList/>}/>
