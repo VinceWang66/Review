@@ -1,46 +1,38 @@
 import { Button, Modal } from "antd";
 import { Style } from "../../style/style";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { TopNav } from "./topNav";
+import { getProducts } from "../../utils/api";
 
 export function ProductSellList(){
     const navigate=useNavigate();
     const [deleteId, setDeleteId]=useState<number|null>(null);
-    const[products,setProducts]=useState([{
-        id: 1,
-        name: 'iPhone 15 Pro',
-        price: 8999,
-        description: 'A17 Pro芯片，钛金属设计，4800万像素主摄，USB-C接口',
-        stock: 128,
-        category: '电子产品'
-      },
-      {
-        id: 2,
-        name: 'MacBook Air',
-        price: 9999,
-        description: 'M3芯片，超薄设计，18小时电池续航',
-        stock: 56,
-        category: '笔记本电脑'
-      },
-      {
-        id: 3,
-        name: 'AirPods Pro',
-        price: 1899,
-        description: '主动降噪，空间音频，MagSafe充电盒',
-        stock: 200,
-        category: '音频设备'
-      },
-      {
-        id: 4,
-        name: 'AirPods Pro2',
-        price: 18999,
-        description: '牛啊牛啊',
-        stock: 2000,
-        category: '音频设备'
-      }])
+    const [error, setError]=useState('');
+    const [loading,setLoading]=useState(true);
+    const[products,setProducts]=useState<any[]>([]);
+    
+    useEffect(()=>{
+        getProducts()
+            .then(res=>{
+                console.log('商品价格结构:', res[0].price);
+                console.log('完整商品结构:', res[0]);
+                setProducts(res);
+                setError('');
+            })
+            .catch(err=>{
+                console.error("获取商品失败", err)
+                setError('获取商品列表失败，请稍后重试');
+            })
+            .finally(()=>{
+                setLoading(false);
+            })
+    },[])
+
     return(
         <div style={Style.override}>
-            <div style={{marginTop: 30}}><h1>商品列表</h1></div>
+            <TopNav />
+            <div style={{marginTop: 100}}><h1>商品列表</h1></div>
             <div style={Style.manager}>
                 <Button onClick={()=>navigate(`/products/add`)} type="primary" style={{marginLeft:'5%',width:'64px'}}>添加商品</Button>
             </div>

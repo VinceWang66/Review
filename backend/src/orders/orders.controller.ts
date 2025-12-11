@@ -16,8 +16,8 @@ export class OrdersController {
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: OrderEntity })
   create(@Body() createOrderDto: CreateOrderDto, @Req() req) {
-    const userId = req.user.userId;
-    return this.ordersService.create(createOrderDto, userId);
+    const uid = req.user.uid;
+    return this.ordersService.create(createOrderDto, uid);
   }
 
   @Get()

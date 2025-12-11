@@ -17,17 +17,18 @@ export class ProductsController {
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: ProductEntity })
   create(@Body() createProductDto: CreateProductDto, @Req() req) {
-    return this.productsService.create(createProductDto, req.user.userId);
+    return this.productsService.create(createProductDto, req.user.uid);
   }
 
   @Get()
   @ApiOkResponse({ type: ProductEntity, isArray: true })
-  findAll() {
-    return this.productsService.findAll();
+  async findAll() {
+    const products = await this.productsService.findAll();
+    return products.map(product => new ProductEntity(product));
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: ProductEntity, isArray: true })
+  @ApiOkResponse({ type: ProductEntity })
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
   }
@@ -37,7 +38,7 @@ export class ProductsController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: ProductEntity })
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto, @Req() req) {
-    return this.productsService.update(+id, updateProductDto, req.user.userId);
+    return this.productsService.update(+id, updateProductDto, req.user.uid);
   }
 
   @Delete(':id')
@@ -53,12 +54,12 @@ export class ProductsController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: ProductEntity })
   purchase(@Param('id') id: string, @Body() purchaseProductDto: SinglePurchaseDto, @Req() req) {
-    const userId = req.user.uid;
-    if (!userId) {
+    const uid = req.user.uid;
+    if (!uid) {
       console.error("无法获取用户ID，用户对象:", req.user);
       throw new UnauthorizedException('无法获取用户信息');
     }
-    return this.productsService.purchase(+id, purchaseProductDto.quantity, userId);
+    return this.productsService.purchase(+id, purchaseProductDto.quantity, uid);
   }
 
   // @Patch('purchase')

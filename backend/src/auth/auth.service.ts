@@ -31,7 +31,8 @@ import {
   
       // Step 3: Generate a JWT containing the user's ID and return it
       return {
-        accessToken: this.jwtService.sign({ userId: user.uid, role: user.role, isseller: user.isseller }),
+        // 统一使用 uid 字段
+        accessToken: this.jwtService.sign({ uid: user.uid, role: user.role, isseller: user.isseller }),
       };
     }
 

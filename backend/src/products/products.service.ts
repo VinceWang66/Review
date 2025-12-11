@@ -37,12 +37,32 @@ export class ProductsService {
     });
   }
 
-  findAll() {
-    return this.prisma.product.findMany();
+  async findAll() {
+    const products = await this.prisma.product.findMany({
+      include:{
+        category:{
+          select:{
+            cname : true
+          }
+        }
+      }
+    });
+    return products.map(p=>({
+      ...p,
+      categoryName:p.category?.cname || '无分类'
+    }))
   }
 
   findOne(id: number) {
-    return this.prisma.product.findUnique({where: { pid: id }});
+    return this.prisma.product.findUnique({
+      where: { pid: id },
+      include: {
+            category: {
+                select: {
+                    cname: true  // 包含分类名称
+                }
+            }
+        }});
   }
 
   async update(id: number, updateProductDto: UpdateProductDto, sellerId: number) {
@@ -54,8 +74,8 @@ export class ProductsService {
     return this.prisma.product.delete({where: {pid: id}});
   }
 
-  async purchase(id: number, quantity: number, userId: number){
-    if (userId === undefined || userId === null) {
+  async purchase(id: number, quantity: number, uid: number){
+    if (uid === undefined || uid === null) {
       throw new UnauthorizedException('请先登录');
     }
     const product = await this.prisma.product.findUnique({
@@ -80,7 +100,7 @@ export class ProductsService {
       // const totalPrice = Number(product.price) * quantity;
       // const order = await prisma.order.create({
       //   data: {
-      //     userId: userId,
+      //     userId: uid,
       //     totalAmount: totalPrice,
       //     status: 'paid'
       //   }
@@ -104,8 +124,8 @@ export class ProductsService {
     })
   }
 
-  // async purchaseCart(items: PurchaseItemDto[], userId: number) {
-  //   if (userId === undefined || userId === null) {
+  // async purchaseCart(items: PurchaseItemDto[], uid: number) {
+  //   if (uid === undefined || uid === null) {
   //     throw new UnauthorizedException('请先登录');
   //   }
   //   if (!items.length) {

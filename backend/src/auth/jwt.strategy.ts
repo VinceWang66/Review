@@ -14,8 +14,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
   }
 
-  async validate(payload: { userId: number; role?: string; isseller?: boolean; username?: string }) {
-    const uid = Number(payload.userId);
+  async validate(payload: { uid: number; role?: string; isseller?: boolean; username?: string }) {
+    const uid = Number(payload.uid);
     if (Number.isNaN(uid)) {
       throw new UnauthorizedException('无效的用户标识');
     }
@@ -23,9 +23,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     if (!user) {
       throw new UnauthorizedException();
     }
-    console.log(`userId in strategy "${user.uid}"`)
+    console.log(`uid in strategy "${user.uid}"`)
     return {
-      userId: user.uid,
+      uid: user.uid,
       username: user.username,
       role: user.role,
       isseller: user.isseller,

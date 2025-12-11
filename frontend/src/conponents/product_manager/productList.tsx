@@ -1,12 +1,12 @@
-import { Button, Modal } from "antd";
+import { Button } from "antd";
 import { Style } from "../../style/style";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProducts } from "../../utils/api";
+import { TopNav } from "./topNav";
 
 export function ProductList(){
     const navigate=useNavigate();
-    const [deleteId, setDeleteId]=useState<number|null>(null);
     const [products,setProducts]=useState<any[]>([]);
     const [error, setError]=useState('');
     const [loading,setLoading]=useState(true);
@@ -44,7 +44,8 @@ export function ProductList(){
 
     return(
         <div style={Style.override}>
-            <div style={{marginTop: 30}}><h1>商品列表</h1></div>
+            <TopNav />
+            <div style={{marginTop: 100}}><h1>商品列表</h1></div>
             {error && (
                 <div style={{
                     margin: '0 5% 20px 5%',
@@ -110,12 +111,20 @@ export function ProductList(){
                                     库存: <strong>{product.stock}</strong>件
                                 </span>
                                 <span style={{ color: '#999' }}>
-                                    分类: <strong>{product.categoryId}</strong>
+                                    分类: <strong>{product.category?.cname || '无分类'}</strong>
                                 </span>
                             </div>
                             <div>
                                 <Button 
-                                    onClick={()=>navigate(`/products/edit/${product.id}`)}
+                                    onClick={()=>{
+                                        // const token = localStorage.getItem('token');
+                                        // if (!token) {
+                                        //     alert('请先登录才能购买');
+                                        //     navigate('/login');
+                                        //     return; // 直接返回，不跳转
+                                        // }
+                                        navigate(`/products/purchase/${product.pid}`)}
+                                    }
                                     size="small" type="primary" style={{ marginRight: '8px' }}
                                 >
                                     购买
@@ -125,19 +134,6 @@ export function ProductList(){
                     </div>
                 ))}
             </div>
-            <Modal
-                title="确认删除"
-                open={deleteId !== null}
-                onOk={() => {
-                    setProducts(cats => cats.filter(c => c.id !== deleteId));
-                    setDeleteId(null);
-                }}
-                onCancel={() => setDeleteId(null)}
-                okText="确认"
-                cancelText="取消"
-            >
-                <p>确定要删除这个分类吗？</p>
-            </Modal>
         </div>
     )
 }

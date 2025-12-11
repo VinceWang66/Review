@@ -11,4 +11,10 @@ export class ProductEntity implements Product{
     sellerId: number;
     createdAt: Date;
     updatedAt: Date;
+    category?: {
+        cname: string;
+    };
+    constructor(partial: Partial<ProductEntity>) {
+        Object.assign(this, partial);
+    }
 }

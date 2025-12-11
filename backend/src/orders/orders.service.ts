@@ -7,13 +7,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class OrdersService {
   constructor(private prisma: PrismaService){}
   
-  async create(createOrderDto: CreateOrderDto, userId:number) {
+  async create(createOrderDto: CreateOrderDto, uid:number) {
     let totalPrice = 0;
     totalPrice= await this.caculate(createOrderDto.items);
     return this.prisma.order.create({
       data:{
         totalAmount:totalPrice,
-        userId:userId
+        userId:uid
       }
     });
   }
