@@ -12,6 +12,7 @@ import { ProductSellList } from './conponents/product_manager/productSellList';
 import { Purchase } from './conponents/product_manager/purchase';
 import { PrivateRoute } from './conponents/common/PrivateRoute';
 import { useEffect } from 'react';
+import { Admin } from './conponents/admin/admin';
 
 function App() {
   
@@ -46,12 +47,13 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/products/seller" element={<ProductSellList />} />
-        <Route path="/products/add" element={<ProductAdd />} />
+        <Route path="/products/add" element={<PrivateRoute><ProductAdd /></PrivateRoute>} />
         <Route path="/products/edit/:id" element={<ProductEdit />} />
         <Route path="/products/purchase/:id" element={<PrivateRoute><Purchase /></PrivateRoute>} />
         <Route path="/category" element={<CategoryList/>}/>
         <Route path="/category/add" element={<CategoryAdd />} />
         <Route path="/category/edit/:id" element={<CategoryEdit />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/" element={<ProductList />} /> {/* 默认首页 */}
       </Routes>
     </BrowserRouter>

@@ -188,4 +188,24 @@ export const Style = {
             padding: '40px',
             color: '#999'
         },
+
+        // 表单通用样式（新增）
+        formCard : {
+            maxWidth: '800px',
+            margin: '0 auto',
+            padding: '20px'
+        },
+        formInstructions : {
+            marginTop: '20px',
+            padding: '16px',
+            backgroundColor: '#f6ffed',
+            border: '1px solid #b7eb8f',
+            borderRadius: '6px'
+        },
+        formButtonContainer : {
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '16px',
+            marginTop: '32px'
+        }
 };

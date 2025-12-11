@@ -20,13 +20,34 @@ export class ProductsService {
     if(!seller||!(seller.isseller||seller.role==='seller')){
       throw new ForbiddenException(`"${sellerId}"不是商家账号（需isseller为true，或role为seller）`)
     }
-    let category = await this.prisma.category.findUnique({
-      where:{ cname:createProductDto.categoryName }
-    });
-    if(!category){
-      throw new NotFoundException(`分类 "${createProductDto.categoryName}" 不存在`);
+    
+    let category;
+    
+    // 优先使用categoryId
+    if (createProductDto.categoryId) {
+      category = await this.prisma.category.findUnique({
+        where:{ cid: createProductDto.categoryId }
+      });
+      if(!category){
+        throw new NotFoundException(`分类ID "${createProductDto.categoryId}" 不存在`);
+      }
+    } 
+    // 如果没传categoryId，使用categoryName
+    else if (createProductDto.categoryName) {
+      category = await this.prisma.category.findUnique({
+        where:{ cname: createProductDto.categoryName }
+      });
+      if(!category){
+        throw new NotFoundException(`分类 "${createProductDto.categoryName}" 不存在`);
+      }
     }
-    const {categoryName,price,...restData}=createProductDto;
+    // 两个都没传
+    else {
+      throw new BadRequestException('必须提供分类ID或分类名称');
+    }
+    
+    const { categoryId, categoryName, price, ...restData } = createProductDto;
+    
     return this.prisma.product.create({
       data:{
         ...restData,
@@ -35,7 +56,7 @@ export class ProductsService {
         sellerId,
       }
     });
-  }
+}
 
   async findAll() {
     const products = await this.prisma.product.findMany({

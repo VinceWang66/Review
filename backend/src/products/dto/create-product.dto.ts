@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, IsString, Max, Min, MaxLength } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, Max, Min, MaxLength, IsOptional } from "class-validator";
 
 export class CreateProductDto {
     @IsString()
@@ -23,9 +23,15 @@ export class CreateProductDto {
     @ApiProperty({description:'商品价格'})
     price: string;
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty({message:'商品分类不能为空'})
     @MaxLength(50,{message: '商品分类不能超过50个字'})
-    @ApiProperty({description:'商品分类'})
-    categoryName: string;
+    @ApiProperty({description:'商品分类名称', required: false})
+    categoryName?: string;
+    
+    @IsOptional()
+    @IsNumber()
+    @Min(1, {message:'商品分类ID必须大于0'})
+    @ApiProperty({description:'商品分类ID', required: false})
+    categoryId?: number;
 }

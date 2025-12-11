@@ -24,7 +24,7 @@ import {
 
     return {
       accessToken: this.jwtService.sign({
-        userId: user.uid,
+        uid: user.uid,
         username: user.username,
         role: user.role,
       }),
