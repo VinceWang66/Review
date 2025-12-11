@@ -29,6 +29,13 @@ export const Style = {
           fontSize: '16px',
           marginTop: '4px'
         },
+
+        // 错误提示
+        right: {
+          color: 'green',
+          fontSize: '16px',
+          marginTop: '4px'
+        },
         
         // 按钮容器
         buttonContainer: {

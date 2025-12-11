@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -30,7 +30,7 @@ export class UsersController {
   async register(@Body() registerDto: RegisterDto) {
     return new RegisterEntity(await this.usersService.register(registerDto));
   }
-
+  
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

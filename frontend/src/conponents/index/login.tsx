@@ -86,11 +86,9 @@ export function Login(){
         }
     }
 
-    const Submitjudge = ()=>{
+    const SubmitJudge = ()=>{
         switch(canSubmit){
             case('write'):
-                return "";
-            case('submit'):
                 return "";
             case('formatError'):
                 return "请按照要求填写内容";
@@ -133,8 +131,9 @@ export function Login(){
             <Button onClick={()=>navigate(`/register`)} size="large" style={Style.button}>注册</Button>
             </div>
             <div style={{textAlign: 'center' as const, ...Style.error}}>
-                {Submitjudge()}
+                {SubmitJudge()}
             </div>
+            {canSubmit==="submit" && <div style={{textAlign: 'center' as const, ...Style.right}}>登陆成功</div>}
         </form>
         </div>
         </>
