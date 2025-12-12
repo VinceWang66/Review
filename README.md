@@ -47,30 +47,30 @@
 
 ## 快速开始
 
-方式一：传统部署（推荐首次体验）
-# 1. 克隆项目
+# 方式一：传统部署（推荐首次体验）
+## 1. 克隆项目
 git clone https://github.com/VinceWang66/Review.git
 cd Review
 
-# 2. 启动后端服务
+## 2. 启动后端服务
 cd backend
 npm install  # 安装依赖
 npm run start:dev  # 开发环境启动（热更新）
 
-# 3. 启动前端服务（新建终端，返回项目根目录）
+## 3. 启动前端服务（新建终端，返回项目根目录）
 cd ../frontend
 npm install  # 安装依赖
 npm run dev  # 开发环境启动
 
-方式二：Docker 部署（一键启动，推荐生产 / 测试环境）
-# 1. 克隆项目并进入目录
+# 方式二：Docker 部署（一键启动，推荐生产 / 测试环境）
+## 1. 克隆项目并进入目录
 git clone https://github.com/VinceWang66/Review.git
 cd Review
 
-# 2. 一键启动所有服务（后端、前端、数据库）
+## 2. 一键启动所有服务（后端、前端、数据库）
 docker-compose up -d
 
-## 环境配置
+# 环境配置
 
 ### Docker 部署（默认）
 项目已包含完整的 Docker 配置，开箱即用：
@@ -85,15 +85,15 @@ docker-compose up -d
 密码：admin123
 连接：postgresql://admin:admin123@postgres:5432/ecommerce
 
-本地开发配置
+#本地开发配置
 如需在宿主机开发，配置后端环境变量：
-# 1. 复制环境变量示例
+## 1. 复制环境变量示例
 ```bash
 cp backend/.env.example backend/.env
 ```
-# 2. 修改 .env 文件
-# - 连接宿主机数据库或容器数据库
-# - 修改 JWT 密钥（生产环境必须）
+## 2. 修改 .env 文件
+- 连接宿主机数据库或容器数据库
+- 修改 JWT 密钥（生产环境必须）
 
 
 ## 访问地址
@@ -134,7 +134,7 @@ API 文档: http://localhost:3000/api（Swagger 自动生成）
 3. **管理员密码**
    - 默认：`admin123`
    - 首次登录后立即修改
-
+```
 
 ### 安全建议
 - 使用 HTTPS 协议
@@ -144,15 +144,15 @@ API 文档: http://localhost:3000/api（Swagger 自动生成）
 
 ## 详细部署指南
 
-方式一：Docker Compose 部署（推荐）
+##方式一：Docker Compose 部署（推荐）
 环境要求
 Docker 20.10+
 Docker Compose 2.0+
 部署步骤
 环境检查
-# 验证Docker版本
+### 验证Docker版本
 docker --version
-# 验证Docker Compose版本
+### 验证Docker Compose版本
 docker-compose --version
 
 若版本不满足要求，请参考Docker 官方文档和Docker Compose 官方文档进行升级。
@@ -160,63 +160,63 @@ docker-compose --version
 git clone https://github.com/VinceWang66/Review.git
 cd Review  # 进入项目根目录
 
-启动服务
+##启动服务
 
-# 后台启动所有服务（-d 表示 detached 模式）
+### 后台启动所有服务（-d 表示 detached 模式）
 
 docker-compose up -d
 
 启动成功后，Docker 会自动拉取所需镜像（PostgreSQL、后端、前端）并创建容器。
 服务验证
 
-# 查看容器运行状态
+### 查看容器运行状态
 docker-compose ps
 
 若所有服务状态为 up，表示启动成功；若有服务启动失败，可通过日志排查：
-# 查看指定服务日志（例如后端服务）
+### 查看指定服务日志（例如后端服务）
 docker-compose logs -f backend
 
 常用管理命令
-# 查看所有服务状态
+### 查看所有服务状态
 docker-compose ps
 
-# 实时查看所有服务日志
+### 实时查看所有服务日志
 docker-compose logs -f
 
-# 停止所有服务（保留容器和数据）
+### 停止所有服务（保留容器和数据）
 docker-compose down
 
-# 停止并删除容器、网络（保留数据卷）
+### 停止并删除容器、网络（保留数据卷）
 docker-compose down --volumes
 
-# 重启所有服务
+### 重启所有服务
 docker-compose restart
 
-# 代码更新后重建服务
+### 代码更新后重建服务
 docker-compose up -d --build
 
-# 进入后端容器执行命令（例如数据库操作）
+### 进入后端容器执行命令（例如数据库操作）
 docker-compose exec backend bash
 
-# 备份数据库（将PostgreSQL数据导出为SQL文件）
+### 备份数据库（将PostgreSQL数据导出为SQL文件）
 docker-compose exec db pg\_dump -U postgres review\_db > backup\_$(date +%Y%m%d).sql
 
-方式二：传统本地部署
-环境要求
+##方式二：传统本地部署
+###环境要求
 Node.js 18+
 PostgreSQL 14+
 包管理器：npm 或 yarn
 数据库客户端（可选）：pgAdmin、DBeaver 等
 部署步骤
-环境准备
+##环境准备
 
-# 验证Node.js版本
+### 验证Node.js版本
 node --version
-# 验证npm版本
+### 验证npm版本
 npm --version
-# 验证PostgreSQL服务（确保已启动）
+### 验证PostgreSQL服务（确保已启动）
 systemctl status postgresql  # Linux
-# 或
+### 或
 pg\_ctl status  # macOS
 
 克隆项目并进入目录
@@ -224,41 +224,52 @@ git clone https://github.com/VinceWang66/Review.git
 cd Review
 
 安装依赖
-# 安装后端依赖
+### 安装后端依赖
+```bash
 cd backend
 npm install  # 或 yarn install
 cd ..
+```
 
-# 安装前端依赖
+### 安装前端依赖
+```bash
 cd frontend
 npm install  # 或 yarn install
 cd ..
+```
 
 环境变量配置
 后端配置：
+```bash
 cd backend
 cp .env.example .env  # 复制示例配置
 # 编辑.env文件，配置关键信息
 vim .env  # 或使用其他编辑器
+```
 
-.env 文件核心配置项：
-# 数据库配置
+##.env 文件核心配置项：
+### 数据库配置
 DATABASE\_URL="postgresql://username:password@localhost:5432/review\_db?schema=public"
-# JWT配置
+### JWT配置
 JWT\_SECRET="your-secret-key"
 JWT\_EXPIRES\_IN="3600s"
-# 服务端口
+### 服务端口
 PORT=3000
 
-前端配置（可选）：
+##前端配置（可选）：
+```bash
 cd frontend
 cp .env.example .env
-# 配置后端API地址
+```
+## 配置后端API地址
+```bash
 VITE\_API\_BASE\_URL="http://localhost:3000"
 cd ..
+```
 
-数据库初始化
-# 进入后端目录
+##数据库初始化
+```bash
+## 进入后端目录
 cd backend
 # 1. 创建数据库（若未手动创建）
 npx prisma db push
@@ -267,16 +278,18 @@ npx prisma migrate deploy
 # 3. 填充测试数据（包括管理员账户）
 npx prisma db seed
 cd ..
+```
 
-启动服务
-开发环境：
+##启动服务
+###开发环境：
+```bash
 # 启动后端（热更新）
 cd backend
 npm run start:dev
 # 新建终端，启动前端（热更新）
 cd frontend
 npm run dev
-
+```
 
 ### 服务初始化
 首次启动后，系统会自动：
@@ -292,7 +305,8 @@ docker-compose up -d
 docker-compose exec backend npx prisma db seed
 ```
 
-生产环境：
+##生产环境：
+```bash
 # 后端构建并启动
 cd backend
 npm run build
@@ -301,12 +315,13 @@ npm run start:prod
 # 前端构建（需Nginx等服务器托管）
 cd frontend
 npm run build
-
-# 构建产物在 dist 目录，配置Nginx指向该目录
+```
+### 构建产物在 dist 目录，配置Nginx指向该目录
 
 
 ## 项目结构
 
+```
 Review/
 ├── backend/                # 后端服务（NestJS）
 │   ├── src/                # 源代码
@@ -351,6 +366,7 @@ Review/
 ├── DATABASE.md             # 数据库设计文档
 ├── DEPLOYMENT.md           # 部署指南
 └── API_DOCUMENTATION.md    # API接口文档
+```
 
 ## 开发状态
 
@@ -392,14 +408,15 @@ docker-compose exec backend npx prisma db seed
 检查后端日志：docker-compose logs backend
 确认数据库迁移已执行：npx prisma migrate deploy
 
-5. 如何修改管理员密码？
+### 5. 如何修改管理员密码？
 方法一：重新执行种子数据（会重置为 admin123）
 方法二：直接操作数据库：
 ```sql
 UPDATE users SET password = '新密码哈希值' WHERE email = 'admin@example.com';
 ```
 
-端口占用：若启动时提示端口被占用，可修改 .env 文件中的 PORT（后端）或 VITE\_PORT（前端）配置。
+### 端口占用：
+若启动时提示端口被占用，可修改 .env 文件中的 PORT（后端）或 VITE\_PORT（前端）配置。
 
 数据库连接失败：
 根据部署方式检查：
@@ -414,4 +431,5 @@ UPDATE users SET password = '新密码哈希值' WHERE email = 'admin@example.co
 - 确认 PostgreSQL 服务已启动
 - 可能需要修改连接地址为 `localhost`
 
-依赖安装失败：尝试更换 npm 镜像源（npm config set registry https://registry.npm.taobao.org）或使用 yarn 安装。
+### 依赖安装失败：
+尝试更换 npm 镜像源（npm config set registry https://registry.npm.taobao.org）或使用 yarn 安装。
