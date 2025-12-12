@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    # ...同上，但可以用本地数据卷
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run start:dev
+    environment:
+      DATABASE_URL: postgresql://admin:admin123@postgres:5432/ecommerce
+      JWT_SECRET: dev-secret-key
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev

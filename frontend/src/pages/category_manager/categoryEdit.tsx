@@ -1,10 +1,10 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { Style } from "../../style/style";
 import { Button, Input } from "antd";
 import { useState } from "react";
 
 export function CategoryEdit(){
-    const { id } =useParams<{id:string}>();
+    // const { id } =useParams<{id:string}>();
     const navigate = useNavigate();
     const [cname, setCname] = useState("");
     const [error, setError] = useState("");

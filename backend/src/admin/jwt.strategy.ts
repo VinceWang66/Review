@@ -1,33 +1,20 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { jwtSecret } from './admin.module';
-import { UsersService } from 'src/users/users.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-admin') {
-  constructor(private usersService: UsersService) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'admin-jwt') {
+  constructor(
+    private configService: ConfigService
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: jwtSecret,
+      secretOrKey: configService.get<string>('JWT_SECRET') || 'zjP9h6ZI5LoSKCRj',
     });
   }
 
-  async validate(payload: { uid: number }) {
-    const uid = Number(payload.uid);
-    if (Number.isNaN(uid)) {
-      throw new UnauthorizedException('无效的用户标识');
-    }
-    const user = await this.usersService.findOne(uid);
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    return {
-      uid: user.uid,
-      username: user.username,
-      role: user.role,
-      isseller: user.isseller,
-      email: user.email,
-    };
+  async validate(payload: any) {
+    return { userId: payload.sub, username: payload.username };
   }
 }

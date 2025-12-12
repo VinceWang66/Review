@@ -28,6 +28,14 @@ const getUserInfoFromToken = () => {
   
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));
+    
+    // 检查 token 是否过期
+    const isExpired = Date.now() > (payload.exp * 1000);
+    if (isExpired) {
+      localStorage.removeItem('token');
+      return null;
+    }
+    
     return {
       role: payload.role,
       isseller: payload.isseller,
@@ -36,6 +44,7 @@ const getUserInfoFromToken = () => {
     return null;
   }
 };
+
 
 /**
  * 检查路径是否匹配动态路由
