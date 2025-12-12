@@ -28,7 +28,7 @@ export function CategoryList(){
       }])
     return(
         <div style={Style.override}>
-            <div style={{marginTop: 30}}><h1>商品列表</h1></div>
+            <div style={{marginTop: 30}}><h1>分类列表</h1></div>
             <div style={Style.manager}>
                 <Button onClick={()=>navigate(`/category/add`)} type="primary" style={{marginLeft:'5%',width:'64px'}}>添加分类</Button>
             </div>
