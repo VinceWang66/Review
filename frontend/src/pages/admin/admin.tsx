@@ -2,8 +2,10 @@ import { Button } from "antd";
 import { UserOutlined, AppstoreOutlined } from "@ant-design/icons";
 import { TopNav } from "../product_manager/topNav";
 import { Style } from "../../style/style";
+import { useNavigate } from "react-router-dom";
 
 export function Admin() {
+  const navigate=useNavigate();
   return (
     <div style={{ ...Style.override, height: "100vh" }}>
       <TopNav />
@@ -38,7 +40,7 @@ export function Admin() {
               fontSize: "32px",
               fontWeight: "bold"
             }}
-            onClick={() => window.location.href = "/user"}
+            onClick={() => navigate("/user")}
           >
             {/* 超大图标 */}
             <UserOutlined style={{ 
@@ -70,7 +72,7 @@ export function Admin() {
               fontSize: "32px",
               fontWeight: "bold"
             }}
-            onClick={() => window.location.href = "/category"}
+            onClick={() => navigate("/category")}
           >
             {/* 超大图标 */}
             <AppstoreOutlined style={{ 

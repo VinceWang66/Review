@@ -28,7 +28,7 @@ export class SellerService {
 
     return {
       accessToken: this.jwtService.sign({
-        userId: user.uid,
+        uid: user.uid,
         username: user.username,
         role: user.role,
         isseller: user.isseller || user.role === 'seller',

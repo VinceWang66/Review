@@ -102,7 +102,7 @@ export function TopNav(){
                         onClick={() => {
                             localStorage.removeItem('token');
                             alert('已退出登录');
-                            window.location.href = '/login';
+                            navigate('/login');
                         }}
                     >
                         登出

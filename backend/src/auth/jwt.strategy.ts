@@ -1,16 +1,18 @@
-// src/auth/jwt.strategy.ts
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { jwtSecret } from './auth.module';
+import { ConfigService } from '@nestjs/config'; // 确保导入
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(private usersService: UsersService) {
+  constructor(
+    private configService: ConfigService, // 添加 ConfigService
+    private usersService: UsersService
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: jwtSecret,
+      secretOrKey: configService.get<string>('JWT_SECRET') || 'zjP9h6ZI5LoSKCRj', // 从 ConfigService 获取
     });
   }
 
