@@ -87,7 +87,9 @@ export class ProductsService {
   }
 
   async update(id: number, updateProductDto: UpdateProductDto, sellerId: number) {
-    // 可进一步增加权限判断，此处只演示结构修正
+    if (!id) {
+      throw new BadRequestException('商品ID不能为空');
+    }
     return this.prisma.product.update({where: {pid: id}, data: { ...updateProductDto, sellerId }});
   }
 

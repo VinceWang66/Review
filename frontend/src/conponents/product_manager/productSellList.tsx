@@ -207,7 +207,12 @@ export function ProductSellList(){
                             <div style={{ 
                                 color: '#666', 
                                 marginBottom: '16px',
-                                lineHeight: '1.6'
+                                lineHeight: '1.6',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2, // 限制显示2行
+                                WebkitBoxOrient: 'vertical'
                             }}>
                                 {product.description}
                             </div>
@@ -227,7 +232,7 @@ export function ProductSellList(){
                                 </div>
                             <div>
                                 <Button 
-                                    onClick={()=>navigate(`/products/edit/${product.id}`)}
+                                    onClick={()=>navigate(`/products/edit/${product.pid}`)}
                                     size="small" type="primary" style={{ marginRight: '8px' }}
                                 >
                                     编辑

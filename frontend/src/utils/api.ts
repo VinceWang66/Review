@@ -38,5 +38,6 @@ export const authFetch = async (url:string, options:RequestInit={})=>{
 export const getProducts = () => authFetch('/products', { method: 'GET' });
 export const getProductsById = (id:number) => authFetch(`/products/${id}`, { method: 'GET' });
 export const getCategories = () => authFetch('/categories', { method: 'GET' });
-export const addProduct = (productData: any) => authFetch('/products',{ method: 'Post', body: JSON.stringify(productData) });
+export const addProduct = (productData: any) => authFetch('/products',{ method: 'POST', body: JSON.stringify(productData) });
 export const deleteProduct = (id: number) => authFetch(`/products/${id}`, { method: 'DELETE' });
+export const updateProduct = (id:number, productData: any) => authFetch(`/products/${id}`,{ method: 'PATCH', body: JSON.stringify(productData) })

@@ -3,6 +3,7 @@ import { Style } from "../../style/style";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { addProduct, getCategories } from "../../utils/api";
+import TextArea from "antd/es/input/TextArea";
 
 export function ProductAdd(){
     const navigate = useNavigate();
@@ -47,10 +48,9 @@ export function ProductAdd(){
         }
     }
 
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>)=>{
-        const {name, value} = e.target;
-        const errorMessage=judge(name, value);
-        setError(m=>({...m, [name]:errorMessage}))
+    const handleBlur = (field: string, value: string)=>{
+        const errorMessage=judge(field, value);
+        setError(m=>({...m, [field]:errorMessage}))
     }
 
     const handleCategoryChange = (value: string) => {
@@ -139,21 +139,21 @@ export function ProductAdd(){
         } catch (error: any) {
             console.error("添加商品时发生错误:", error);
     
-    // 区分权限不足和未登录
-    if (error.message.includes('权限不足')) {
-        message.error('您没有添加商品的权限，请联系管理员');
-    } else if (error.message.includes('请先登录') || error.message.includes('403')) {
-        message.error('登录已过期，请重新登录');
-        setTimeout(() => {
-            navigate('/login');
-        }, 1000);
-    } else {
-        message.error(`添加失败: ${error.message || "未知错误"}`);
-    }
-        } finally {
-            setSubmitting(false);
+        // 区分权限不足和未登录
+        if (error.message.includes('权限不足')) {
+            message.error('您没有添加商品的权限，请联系管理员');
+        } else if (error.message.includes('请先登录') || error.message.includes('403')) {
+            message.error('登录已过期，请重新登录');
+            setTimeout(() => {
+                navigate('/login');
+            }, 1000);
+        } else {
+            message.error(`添加失败: ${error.message || "未知错误"}`);
         }
-    }
+            } finally {
+                setSubmitting(false);
+            }
+        }
 
     const judge = (name: string, value: string) => {
         switch (name) {
@@ -200,7 +200,7 @@ export function ProductAdd(){
                         placeholder="请输入商品名称"
                         value={products.pname}
                         onInput={(e: any) => handlechange("pname", e.target.value)}
-                        onBlur={handleBlur}
+                        onBlur={() => handleBlur("pname", products.pname)}
                         disabled={submitting}
                     />
                 </div>
@@ -211,13 +211,17 @@ export function ProductAdd(){
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                     <label style={{ width: 100 }}>商品描述</label>
-                    <Input
+                    <TextArea
                         name="description"
                         placeholder="请输入商品描述"
                         value={products.description}
                         onInput={(e: any) => handlechange("description", e.target.value)}
-                        onBlur={handleBlur}
+                        onBlur={() => handleBlur("description", products.description)}
                         disabled={submitting}
+                        autoSize={{ minRows: 3, maxRows: 6 }}  // 自动调整高度，3-6行
+                        style={{ resize: 'vertical' }}  // 允许垂直拖动调整大小
+                        showCount  // 显示字数统计
+                        maxLength={1000}  // 与验证规则保持一致
                     />
                 </div>
                 {error.description && (
@@ -232,7 +236,7 @@ export function ProductAdd(){
                         placeholder="请输入商品价格"
                         value={products.price}
                         onInput={(e: any) => handlechange("price", e.target.value)}
-                        onBlur={handleBlur}
+                        onBlur={() => handleBlur("price", products.price)}
                         disabled={submitting}
                     />
                 </div>
@@ -248,7 +252,7 @@ export function ProductAdd(){
                         placeholder="请输入商品库存"
                         value={products.stock}
                         onInput={(e: any) => handlechange("stock", e.target.value)}
-                        onBlur={handleBlur}
+                        onBlur={() => handleBlur("stock", products.stock)}
                         disabled={submitting}
                     />
                 </div>
@@ -286,7 +290,7 @@ export function ProductAdd(){
                         {submitting ? "提交中..." : "提交商品"}
                     </Button>
                     <Button 
-                        onClick={() => navigate(`/products`)} 
+                        onClick={() => navigate(`/products/seller`)} 
                         disabled={submitting}
                     >
                         取消

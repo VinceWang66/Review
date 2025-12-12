@@ -1,59 +1,202 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { Style } from "../../style/style";
-import { Button, Input } from "antd";
-import { useState } from "react";
+import { Button, Input, message, Select } from "antd";
+import { useEffect, useState } from "react";
+import { getCategories, getProductsById, updateProduct } from "../../utils/api";
+import TextArea from "antd/es/input/TextArea";
 
 export function ProductEdit(){
     const { id } =useParams<{id:string}>();
+    const pid = id ? parseInt(id) : null;
     const navigate=useNavigate();
     const [products,setProducts]=useState({
         pname:"",
         description:"",
         price:"",
         stock:"",
-        category:""
+        categoryId:""
     })
     const [error,setError]=useState({
         pname:"",
         description:"",
         price:"",
         stock:"",
-        category:""
+        categoryId:""
     })
-    const [canSubmit,setCanSubmit]=useState(true);
+    const [canSubmit, setCanSubmit] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
+    const [categories, setCategories] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const handlechange = (field:string, value:string)=>{
-        setProducts(p=>({...p,[field]:value}));
+    useEffect(() => {
+        if (pid === null) {
+            console.log('❌ pid为null，停止执行');
+            message.error('商品ID无效');
+            setLoading(false);
+            return;
+        }
+        // 同时获取商品和分类
+        Promise.all([
+            getProductsById(pid),
+            getCategories()
+        ])
+        .then(([productsRes, categoriesRes]) => {
+            setProducts(productsRes);
+            setCategories(categoriesRes);
+            // 格式化价格数据
+            let displayPrice = "0.00";
+            if (productsRes.price && productsRes.price.d) {
+                const d = productsRes.price.d;
+                
+                if (d.length >= 2) {
+                    // 格式：[整数, 小数部分] 例如 [15, 5000000] -> 15.5
+                    const integer = d[0] || 0;
+                    const fraction = d[1] || 0;
+                    const priceValue = integer + (fraction / 10000000);
+                    displayPrice = priceValue.toFixed(2);
+                } else if (d.length === 1) {
+                    // 如果只有整数部分，直接显示
+                    displayPrice = d[0].toFixed(2);
+                }
+            }
+            
+            // 设置表单数据
+            setProducts({
+                pname: productsRes.pname || "",
+                description: productsRes.description || "",
+                price: displayPrice,
+                stock: productsRes.stock?.toString() || "",
+                categoryId: productsRes.categoryId?.toString() || ""
+            });
+            console.log('productsRes:', productsRes);
+            console.log('price字段:', productsRes.price);   
+            setCategories(categoriesRes);
+        })
+        .catch(() => {
+            message.error('获取数据失败，请稍后重试');
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+    }, []);
+    
+    const handlechange = (field: string, value: string) => {
+        setProducts(p => ({...p, [field]: value}));
         if (error[field as keyof typeof error]) {
             setError(p => ({ ...p, [field]: "" }));
         }
     }
-
-    const handleBlur = (e: React.FocusEvent<HTMLInputElement>)=>{
-        const {name, value} = e.target;
-        const errorMessage=judge(name, value);
-        setError(m=>({...m, [name]:errorMessage}))
+    
+    const handleCategoryChange = (value: string) => {
+        handlechange("categoryId", value);
     }
 
-    const handleSubmit = (e: React.FormEvent)=>{
+    const handleBlur = (field: string, value: string)=>{
+        const errorMessage=judge(field, value);
+        setError(m=>({...m, [field]:errorMessage}))
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const token = localStorage.getItem('token');
+        console.log('提交时的token:', token ? '存在' : '不存在');
+        console.log('提交时的token值:', token);
+        if (!token) {
+            message.error('请先登录');
+            navigate('/login');
+            return;
+        }
+        setSubmitting(true);
+
+        // 验证所有字段
         const newError = {
             pname: judge("pname", products.pname),
             description: judge("description", products.description),
             price: judge("price", products.price),
             stock: judge("stock", products.stock),
-            category: judge("category", products.category)
+            categoryId: products.categoryId ? "" : "请选择商品分类"  // 验证是否选择了分类
         };
+
         setError(newError);
         const hasError = Object.values(newError).some(err => err);
+
         if (hasError) {
-            // alert("请按照要求填写");
             setCanSubmit(false);
+            setSubmitting(false);
+            message.error("请检查表单，确保所有必填项都已正确填写");
             return;
         }
+
         setCanSubmit(true);
-        navigate(`/products`)
-    }
+
+        try {
+            // 准备商品数据
+            const stockNum = parseInt(products.stock);
+
+            const productData = {
+                pname: products.pname.trim(),
+                description: products.description.trim(),
+                price: products.price,
+                stock: stockNum,
+                categoryId: parseInt(products.categoryId)  // 使用选择的分类ID
+            };
+
+            console.log('准备提交的商品数据:', productData);
+
+            // 调用API插入商品
+            if(pid===null){
+                return;
+            }
+            const result = await updateProduct(pid,productData);
+            
+            if (result) {
+                // 判断成功的条件
+                const isSuccess = result.success !== false && 
+                                 !result.error && 
+                                 !result.message?.includes("失败");
+                
+                if (isSuccess) {
+                    message.success("商品更新成功！");
+                    
+                    // 清空表单
+                    setProducts({
+                        pname: "",
+                        description: "",
+                        price: "",
+                        stock: "",
+                        categoryId: ""
+                    });
+                    
+                    // 延迟跳转，让用户看到成功消息
+                    setTimeout(() => {
+                        navigate('/products/seller');
+                    }, 500);
+                } else {
+                    message.error(result?.message || "更新商品失败，请重试");
+                }
+            } else {
+                message.error("更新商品失败，请重试");
+            }
+
+        } catch (error: any) {
+            console.error("更新商品时发生错误:", error);
+    
+        // 区分权限不足和未登录
+        if (error.message.includes('权限不足')) {
+            message.error('您没有更新商品的权限，请联系管理员');
+        } else if (error.message.includes('请先登录') || error.message.includes('403')) {
+            message.error('登录已过期，请重新登录');
+            setTimeout(() => {
+                navigate('/login');
+            }, 1000);
+        } else {
+            message.error(`更新失败: ${error.message || "未知错误"}`);
+        }
+            } finally {
+                setSubmitting(false);
+            }
+        }
+        
     const judge = (name:string, value:string)=>{
         switch(name){
             case "pname":
@@ -83,86 +226,122 @@ export function ProductEdit(){
                 return "";
         }
     }
-    return(
+
+    const categoryOptions = categories.map(category => ({
+        value: category.cid.toString(),
+        label: category.cname
+    }));
+
+    if (loading) {
+        return <div style={{ textAlign: 'center', padding: '40px' }}>加载中...</div>;
+    }
+    return (
         <div>
             <form onSubmit={handleSubmit}>
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                    <label style={{width:100}}>商品名称</label>
-                    <Input 
+                    <label style={{ width: 100 }}>商品名称</label>
+                    <Input
                         name="pname"
                         placeholder="请输入商品名称"
                         value={products.pname}
-                        onInput={(e:any)=> handlechange("pname", e.target.value)}
-                        onBlur={handleBlur}
+                        onInput={(e: any) => handlechange("pname", e.target.value)}
+                        onBlur={() => handleBlur("pname", products.pname)}
+                        disabled={submitting}
                     />
                 </div>
                 {error.pname && (
                     <div style={Style.error}>
-                    {error.pname}
+                        {error.pname}
                     </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                    <label style={{width:100}}>商品描述</label>
-                    <Input
-                        name="description" 
+                    <label style={{ width: 100 }}>商品描述</label>
+                    <TextArea
+                        name="description"
                         placeholder="请输入商品描述"
-                        onInput={(e:any)=> handlechange("description", e.target.value)}
-                        onBlur={handleBlur}
+                        value={products.description}
+                        onInput={(e: any) => handlechange("description", e.target.value)}
+                        onBlur={() => handleBlur("description", products.description)}
+                        disabled={submitting}
+                        autoSize={{ minRows: 3, maxRows: 6 }}  // 自动调整高度，3-6行
+                        style={{ resize: 'vertical' }}  // 允许垂直拖动调整大小
+                        showCount  // 显示字数统计
+                        maxLength={1000}  // 与验证规则保持一致
                     />
                 </div>
                 {error.description && (
                     <div style={Style.error}>
-                    {error.description}
+                        {error.description}
                     </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                    <label style={{width:100}}>商品价格</label>
-                    <Input 
+                    <label style={{ width: 100 }}>商品价格</label>
+                    <Input
                         name="price"
                         placeholder="请输入商品价格"
-                        onInput={(e:any)=> handlechange("price", e.target.value)}
-                        onBlur={handleBlur}
+                        value={products.price}
+                        onInput={(e: any) => handlechange("price", e.target.value)}
+                        onBlur={() => handleBlur("price", products.price)}
+                        disabled={submitting}
                     />
                 </div>
                 {error.price && (
                     <div style={Style.error}>
-                    {error.price}
+                        {error.price}
                     </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                    <label style={{width:100}}>商品库存</label>
-                    <Input 
+                    <label style={{ width: 100 }}>商品库存</label>
+                    <Input
                         name="stock"
                         placeholder="请输入商品库存"
-                        onInput={(e:any)=> handlechange("stock", e.target.value)}
-                        onBlur={handleBlur}
+                        value={products.stock}
+                        onInput={(e: any) => handlechange("stock", e.target.value)}
+                        onBlur={() => handleBlur("stock", products.stock)}
+                        disabled={submitting}
                     />
                 </div>
                 {error.stock && (
                     <div style={Style.error}>
-                    {error.stock}
+                        {error.stock}
                     </div>
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-                    <label style={{width:100}}>商品分类</label>
-                    <Input 
-                        name="category"
-                        placeholder="请输入商品分类"
-                        onInput={(e:any)=> handlechange("category", e.target.value)}
-                        onBlur={handleBlur}
+                    <label style={{ width: 100 }}>商品分类</label>
+                    <Select
+                        style={{ width: '100%' }}
+                        placeholder="请选择商品分类"
+                        value={products.categoryId || undefined}
+                        onChange={handleCategoryChange}
+                        disabled={submitting}
+                        options={categoryOptions}
+                        showSearch
+                        allowClear
                     />
                 </div>
-                {error.category && (
+                {error.categoryId && (
                     <div style={Style.error}>
-                    {error.category}
+                        {error.categoryId}
                     </div>
                 )}
                 <div style={Style.buttonContainer}>
-                    <Button htmlType="submit" type="primary">提交商品</Button>
-                    <Button onClick={()=>navigate(`/products`)}>取消</Button>
+                    <Button 
+                        htmlType="submit" 
+                        type="primary" 
+                        loading={submitting}
+                        disabled={submitting}
+                    >
+                        {submitting ? "更新中..." : "更新商品"}
+                    </Button>
+                    <Button 
+                        onClick={() => navigate(`/products/seller`)} 
+                        disabled={submitting}
+                    >
+                        取消
+                    </Button>
                 </div>
-                {!canSubmit && 
-                    <div style={{textAlign: 'center' as const, ...Style.error}}>请按照要求填写内容</div>
+                {!canSubmit &&
+                    <div style={{ textAlign: 'center' as const, ...Style.error }}>请按照要求填写内容</div>
                 }
             </form>
         </div>
