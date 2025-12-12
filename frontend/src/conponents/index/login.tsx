@@ -2,10 +2,11 @@ import { Input, Button } from "antd";
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Style } from "../../style/style";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function Login(){
     const navigate = useNavigate();
+    const location = useLocation();
     const[username,setUsername]=useState('');
     const[password,setPassword]=useState('');
     const[error,setError]=useState({
@@ -15,6 +16,11 @@ export function Login(){
     const [canSubmit,setCanSubmit]=useState<'write' | 'formatError' | 'submit' | 'loginError'>('write');//初始化提交状态为write
     const [loading, setLoading] = useState(false);
     
+    const handleLoginSuccess = () => {
+        const from = (location.state as any)?.from?.pathname || '/';
+        navigate(from, { replace: true });
+      };
+
     const handleSubmit = async(e: React.FormEvent)=>{
         e.preventDefault();
         //清空之前的提交错误
@@ -54,7 +60,7 @@ export function Login(){
             }
             if(data.accessToken){
                 localStorage.setItem('token',data.accessToken);
-                navigate('/');
+                handleLoginSuccess();
             }else{
                 throw new Error('未获取到Token，请联系管理员处理')
             }

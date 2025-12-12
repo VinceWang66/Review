@@ -5,29 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 export function TopNav(){
     const navigate = useNavigate();
-    
-    const getUserInfo = () => {
-        const token = localStorage.getItem('token');
-        if (!token) return null;
-        
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            return {
-                role: payload.role,
-                isseller: payload.isseller,
-            };
-        } catch {
-            return null;
-        }
-    };
-
     // 获取当前路径
     const currentPath = window.location.pathname;
     const isSellerPage = currentPath.includes('/products/seller');
     const isAdminPage = currentPath.includes('/admin');
     
-    const userInfo = getUserInfo();
-
     return(
         <div style={Style.safari}>
             {/* 左侧：应用名称/logo */}
@@ -77,14 +59,7 @@ export function TopNav(){
                                     type="text"
                                     size="middle"
                                     style={{ color: '#722ed1' }}
-                                    onClick={() => {
-                                        // 检查是否是管理员
-                                        if (userInfo?.role === 'admin') {
-                                            navigate('/admin');
-                                        } else {
-                                            alert('需要管理员权限');
-                                        }
-                                    }}
+                                    onClick={() => navigate('/admin')}
                                 >
                                     管理端
                                 </Button>

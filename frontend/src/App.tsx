@@ -10,7 +10,7 @@ import { CategoryAdd } from './conponents/category_manager/categoryAdd';
 import { CategoryEdit } from './conponents/category_manager/categoryEdit';
 import { ProductSellList } from './conponents/product_manager/productSellList';
 import { Purchase } from './conponents/product_manager/purchase';
-import { PrivateRoute } from './conponents/common/PrivateRoute';
+import { AdminRoute, PrivateRoute, SellerRoute } from './conponents/common/PrivateRoute';
 import { useEffect } from 'react';
 import { Admin } from './conponents/admin/admin';
 
@@ -27,7 +27,6 @@ function App() {
             
             if (isExpired) {
                 localStorage.removeItem('token');
-                // 可选：提示用户重新登录
                 if (window.location.pathname !== '/login') {
                     alert('登录已过期，请重新登录');
                     window.location.href = '/login';
@@ -46,14 +45,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/products" element={<ProductList />} />
-        <Route path="/products/seller" element={<ProductSellList />} />
-        <Route path="/products/add" element={<PrivateRoute><ProductAdd /></PrivateRoute>} />
-        <Route path="/products/edit/:id" element={<ProductEdit />} />
+        <Route path="/products/seller" element={<SellerRoute><ProductSellList /></SellerRoute>} />
+        <Route path="/products/add" element={<SellerRoute><ProductAdd /></SellerRoute>} />
+        <Route path="/products/edit/:id" element={<SellerRoute><ProductEdit /></SellerRoute>} />
         <Route path="/products/purchase/:id" element={<PrivateRoute><Purchase /></PrivateRoute>} />
         <Route path="/category" element={<CategoryList/>}/>
-        <Route path="/category/add" element={<CategoryAdd />} />
-        <Route path="/category/edit/:id" element={<CategoryEdit />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/category/add" element={<AdminRoute><CategoryAdd /></AdminRoute>} />
+        <Route path="/category/edit/:id" element={<AdminRoute><CategoryEdit /></AdminRoute>} />
+        <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
         <Route path="/" element={<ProductList />} /> {/* 默认首页 */}
       </Routes>
     </BrowserRouter>
