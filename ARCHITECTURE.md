@@ -1,5 +1,6 @@
 一、架构概览​
 本项目采用经典的前后端分离架构，后端基于 NestJS 框架构建 RESTful API，前端使用 React 构建用户界面，通过 Prisma ORM 连接 PostgreSQL 数据库。
+
 ​```
 Review
 ├── 前端层 (React + TypeScript)
@@ -15,12 +16,14 @@ Review
 │ │ └── 核心文件 # 应用配置和入口
 │ └── 配置文件 # package.json、.env等
 │
-└── 基础设施层
+├── 基础设施层
 ├── Docker容器化部署
 └── PostgreSQL数据库
 ​```
+
 二、后端架构设计​
 2.1 模块化设计​
+
 ​```
 backend/ # 后端工程根目录​
 ├── src/ # 应用源码​
@@ -44,9 +47,11 @@ backend/ # 后端工程根目录​
 ├── Dockerfile.backend / nest-cli.json / tsconfig*.json / package.json / package-lock.json​
 └── generated/ # 生成的 Prisma 类型（源码态）​
 ```
+
 2.2 数据流设计​
 HTTP 请求 → 全局拦截器（日志记录） → 全局守卫（JWT 验证 → 角色检查） → 数据验证管道（DTO 校验） → 模块控制器 → 模块服务 → Prisma 服务（数据访问） → PostgreSQL 数据库 → 响应格式化拦截器 → 返回 JSON 响应
 2.3 核心模块职责​
+
 ​```
 | 模块名称 | 核心职责 | 依赖模块 |
 |----------|----------|----------|
@@ -58,6 +63,7 @@ HTTP 请求 → 全局拦截器（日志记录） → 全局守卫（JWT 验证 
 | admin | 系统配置、全局数据统计、用户管理 | users、products、orders |
 | seller | 商家商品管理、订单处理、销售统计 | products、orders、users |
 ​```
+
 三、前端架构设计​
 3.1 组件化结构​
 ​```
