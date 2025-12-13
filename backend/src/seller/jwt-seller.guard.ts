@@ -2,7 +2,7 @@ import { ExecutionContext, ForbiddenException, Injectable, Logger } from '@nestj
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class JwtSellerGuard extends AuthGuard('jwt-seller') {
+export class JwtSellerGuard extends AuthGuard('jwt') {
   private readonly logger = new Logger('JwtSellerGuard');
 
   canActivate(context: ExecutionContext) {
