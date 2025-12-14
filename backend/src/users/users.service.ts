@@ -18,24 +18,49 @@ export class UsersService {
     );
     createUserDto.password = hashedPassword;
     const role = (createUserDto.role || 'user').toLowerCase();
-    // isseller 只在数据入库时动态赋值
-    return this.prisma.user.create({
-      data: {
-        ...createUserDto,
-        role,
-        isseller: role === 'seller',
+    
+    try {
+      return await this.prisma.user.create({
+        data: {
+          ...createUserDto,
+          role,
+          isseller: role === 'seller',
+        }
+      });
+    } catch (error) {
+      // 处理唯一键约束错误
+      if (error.code === 'P2002') {
+        const target = (error.meta?.target as string[]) || [];
+        if (target.includes('username')) {
+          throw new BadRequestException('用户名已存在');
+        }else if (target.includes('email')) {
+          throw new BadRequestException('邮箱已存在');
+        }else{
+          throw new BadRequestException('用户数据已存在');
+        }
       }
-    });
+      throw error;
+    }
   }
 
   findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      select: {
+        uid: true,
+        username: true,
+        email: true,
+        isseller: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
   }
 
   async findOne(uid: number) {
     const user = await this.prisma.user.findUnique({
       where: { uid: uid },
-      select: { uid: true, username: true, email: true, password: true, isseller: true, role: true },
+      select: { uid: true, username: true, email: true, password: true, isseller: true, role: true, createdAt: true, updatedAt: true },
     })
     if(!user){
       throw new NotFoundException(`用户 ${uid} 不存在`);
@@ -54,7 +79,29 @@ export class UsersService {
     if (updateUserDto.role !== undefined) {
       data.isseller = updateUserDto.role === 'seller';
     }
-    return this.prisma.user.update({ where: { uid }, data });
+    
+    try {
+      return await this.prisma.user.update({ 
+        where: { uid }, 
+        data 
+      });
+    } catch (error) {
+      console.log('Prisma错误详情:', error); // 添加这行
+      console.log('错误代码:', error.code);
+      console.log('错误meta:', error.meta);
+      console.log('错误target:', error.meta?.target);
+      if (error.code === 'P2002') {
+        const target = (error.meta?.target as string[]) || [];
+        if (target.includes('username')) {
+          throw new BadRequestException('用户名已存在');
+        }else if (target.includes('email')) {
+          throw new BadRequestException('邮箱已被注册');
+        }else{
+          throw new BadRequestException('用户数据已存在');
+        }
+      }
+      throw error;
+    }
   }
 
   remove(uid: number) {
@@ -82,6 +129,8 @@ export class UsersService {
           email: true,
           isseller: true,
           role: true,
+          createdAt: true,
+          updatedAt: true
         }
       });
       return user;

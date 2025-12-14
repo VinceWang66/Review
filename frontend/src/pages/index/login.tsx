@@ -39,8 +39,7 @@ export function Login(){
             setCanSubmit('formatError');//设置提交状态为不可提交的formatError
             return;
         }
-        //设置提交状态为submit
-        setCanSubmit('submit');
+        
         setLoading(true);
 
         try {
@@ -60,7 +59,13 @@ export function Login(){
             }
             if(data.accessToken){
                 localStorage.setItem('token',data.accessToken);
-                handleLoginSuccess();
+                // 在这里设置登录成功状态，并延迟跳转
+                setCanSubmit('submit');
+                
+                // 使用 setTimeout 延迟显示和跳转
+                setTimeout(() => {
+                    handleLoginSuccess();
+                }, 500);
             }else{
                 throw new Error('未获取到Token，请联系管理员处理')
             }

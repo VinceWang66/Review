@@ -9,7 +9,12 @@ import { ProductSellList } from './pages/product_manager/productSellList';
 import { Purchase } from './pages/product_manager/purchase';
 import { AdminRoute, PrivateRoute, SellerRoute } from './common/PrivateRoute';
 import { Admin } from './pages/admin/admin';
-import { Building } from './pages/building/building';
+import { CategoryList } from './pages/category_manager/categoryList';
+import { UserList } from './pages/user_manager/userList';
+import { UserAdd } from './pages/user_manager/userAdd';
+import { UserEdit } from './pages/user_manager/userEdit';
+import { CategoryAdd } from './pages/category_manager/categoryAdd';
+import { CategoryEdit } from './pages/category_manager/categoryEdit';
 
 function App() {
   return(
@@ -22,12 +27,12 @@ function App() {
         <Route path="/products/add" element={<SellerRoute><ProductAdd /></SellerRoute>} />
         <Route path="/products/edit/:id" element={<SellerRoute><ProductEdit /></SellerRoute>} />
         <Route path="/products/purchase/:id" element={<PrivateRoute><Purchase /></PrivateRoute>} />
-        <Route path="/category" element={<Building/>}/>
-        <Route path="/category/add" element={<AdminRoute><Building/></AdminRoute>} />
-        <Route path="/category/edit/:id" element={<AdminRoute><Building/></AdminRoute>} />
-        <Route path="/user" element={<AdminRoute><Building/></AdminRoute>} />
-        <Route path="/user/add" element={<AdminRoute><Building/></AdminRoute>} />
-        <Route path="/user/edit/:id" element={<AdminRoute><Building/></AdminRoute>} />
+        <Route path="/category" element={<AdminRoute><CategoryList/></AdminRoute>}/>
+        <Route path="/category/add" element={<AdminRoute><CategoryAdd/></AdminRoute>} />
+        <Route path="/category/edit/:id" element={<AdminRoute><CategoryEdit/></AdminRoute>} />
+        <Route path="/user" element={<AdminRoute><UserList/></AdminRoute>} />
+        <Route path="/user/add" element={<AdminRoute><UserAdd/></AdminRoute>} />
+        <Route path="/user/edit/:id" element={<AdminRoute><UserEdit/></AdminRoute>} />
         <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
         <Route path="/" element={<ProductList />} /> {/* 默认首页 */}
       </Routes>

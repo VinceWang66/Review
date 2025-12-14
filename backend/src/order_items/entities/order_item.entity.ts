@@ -1,4 +1,4 @@
-import { OrderItem } from "generated/prisma/client";
+import { OrderItem } from ".prisma/client";
 
 export class OrderItemEntity implements OrderItem{
     oiid: number;
