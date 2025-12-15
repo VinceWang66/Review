@@ -1,12 +1,21 @@
 import { ArgumentsHost, Catch, HttpStatus } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';  // ✅ 只保留这个
 import { Response } from 'express';
 
-@Catch(Prisma.PrismaClientKnownRequestError)
+
+// 使用类型断言来绕过TypeScript检查
+const PrismaClientKnownRequestError = (Prisma as any).PrismaClientKnownRequestError || Error;
+
+@Catch(PrismaClientKnownRequestError)
 export class PrismaClientExceptionFilter extends BaseExceptionFilter {
-  catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
-    console.error(exception.message);  // 3
+  catch(exception: any, host: ArgumentsHost) {  // ✅ 使用 any 类型
+    console.error('Prisma错误代码:', exception.code, '消息:', exception.message);
+    
+    if (!exception.code || !exception.code.startsWith('P')) {
+      return super.catch(exception, host);
+    }
+    
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -43,9 +52,10 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         message = 'ID关系错误';
         break;
       default:
-      // default 500 error code
-      return super.catch(exception, host);
+        // 其他Prisma错误交给父类处理
+        return super.catch(exception, host);
     }
+    
     response.status(status).json({
       statusCode: status,
       message: message,

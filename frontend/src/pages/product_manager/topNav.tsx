@@ -8,7 +8,7 @@ export function TopNav(){
     // 获取当前路径
     const currentPath = window.location.pathname;
     const isSellerPage = currentPath.includes('/products/seller');
-    const isAdminPage = currentPath.includes('/admin');
+    const isAdminPage = currentPath.includes('/admin')||currentPath.includes('/user')||currentPath.includes('/category');
     
     return(
         <div style={Style.safari}>

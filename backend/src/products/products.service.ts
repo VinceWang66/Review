@@ -13,10 +13,15 @@ export class ProductsService {
   ){}
   
   async create(createProductDto: CreateProductDto, sellerId: number) {
+    if (!sellerId || isNaN(sellerId)) {
+      throw new BadRequestException(`无效的卖家ID: ${sellerId}`);
+    }
     let seller = await this.prisma.user.findUnique({
       where: { uid: sellerId },
       select: { isseller: true, role: true }
     });
+
+    console.log('sellerId:', sellerId); // 调试
     if(!seller||!(seller.isseller||seller.role==='seller')){
       throw new ForbiddenException(`"${sellerId}"不是商家账号（需isseller为true，或role为seller）`)
     }

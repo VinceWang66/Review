@@ -30,14 +30,24 @@ export const authFetch = async (url:string, options:RequestInit={})=>{
         throw new Error('权限不足，无法访问该资源');
     }
     //其他错误
-    throw new Error(data.message||`请求失败(${response.status})`);
+    const errorMessage = data.message || `请求失败 (${response.status})`;
+    throw new Error(errorMessage.trim());
 }
     return data;
 }
 
 export const getProducts = () => authFetch('/products', { method: 'GET' });
 export const getProductsById = (id:number) => authFetch(`/products/${id}`, { method: 'GET' });
-export const getCategories = () => authFetch('/categories', { method: 'GET' });
 export const addProduct = (productData: any) => authFetch('/products',{ method: 'POST', body: JSON.stringify(productData) });
 export const deleteProduct = (id: number) => authFetch(`/products/${id}`, { method: 'DELETE' });
 export const updateProduct = (id:number, productData: any) => authFetch(`/products/${id}`,{ method: 'PATCH', body: JSON.stringify(productData) })
+export const getUsers = () => authFetch('/users', { method: 'GET' });
+export const getUserById = (id:number) => authFetch(`/users/${id}`, { method: 'GET' });
+export const deleteUser = (id: number) => authFetch(`/users/${id}`, { method: 'DELETE' });
+export const addUser = (userData: any) => authFetch('/users',{ method: 'POST', body: JSON.stringify(userData) });
+export const updateUser = (id:number, userData: any) => authFetch(`/users/${id}`,{ method: 'PATCH', body: JSON.stringify(userData) });
+export const getCategories = () => authFetch('/categories', { method: 'GET' });
+export const getCategoryById = (id:number) => authFetch(`/categories/${id}`, { method: 'GET' });
+export const deleteCategory = (id: number) => authFetch(`/categories/${id}`, { method: 'DELETE' });
+export const addCategory = (categoryData: any) => authFetch('/categories',{ method: 'POST', body: JSON.stringify(categoryData) });
+export const updateCategory = (id:number, categoryData: any) => authFetch(`/categories/${id}`,{ method: 'PATCH', body: JSON.stringify(categoryData) });

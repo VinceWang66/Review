@@ -31,7 +31,7 @@ export class SellerService {
         uid: user.uid,
         username: user.username,
         role: user.role,
-        isseller: user.isseller || user.role === 'seller',
+        isseller: true,
       }),
     };
   }

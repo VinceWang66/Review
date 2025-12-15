@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'seller-jwt') {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private configService: ConfigService
   ) {
@@ -15,6 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'seller-jwt') {
   }
 
   async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+    console.log('Seller策略收到payload:', payload);
+    return { uid: payload.uid, username: payload.username, role: payload.role, isseller: payload.isseller };
   }
 }

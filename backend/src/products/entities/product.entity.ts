@@ -1,5 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/client";
-import { Product } from "generated/prisma/client";
+import { Product } from ".prisma/client";
 
 export class ProductEntity implements Product{
     pid: number;

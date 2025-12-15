@@ -4,9 +4,9 @@ services:
   # PostgreSQL数据库
   postgres:
     image: postgres:15-alpine
-    container_name: ecommerce-db
+    container_name: ecommerce-db_renamed
     environment:
-      POSTGRES_DB: ecommerce
+      POSTGRES_DB: ecommerce_renamed
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin123
     ports:
@@ -21,11 +21,11 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.backend
-    container_name: ecommerce-backend
+    container_name: ecommerce-backend_renamed
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://admin:admin123@postgres:5432/ecommerce
+      DATABASE_URL: postgresql://admin:admin123@postgres:5432/ecommerce_renamed
       JWT_SECRET: zjP9h6ZI5LoSKCRj
     depends_on:
       - postgres
@@ -40,7 +40,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.frontend
-    container_name: ecommerce-frontend
+    container_name: ecommerce-frontend_renamed
     ports:
       - "5173:80"
     depends_on:

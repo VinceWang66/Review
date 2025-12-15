@@ -3,7 +3,7 @@ import { Injectable, ExecutionContext, Logger, ForbiddenException } from '@nestj
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class JwtAdminGuard extends AuthGuard('jwt-admin') {
+export class JwtAdminGuard extends AuthGuard('jwt') {
   private readonly logger = new Logger('JwtAdminGuard');  // ← 改日志名
 
   canActivate(context: ExecutionContext) {
@@ -23,7 +23,6 @@ export class JwtAdminGuard extends AuthGuard('jwt-admin') {
     this.logger.log('🔴 检查用户权限:', {
       username: user.username,
       role: user.role,
-      isseller: user.isseller
     });
     
     // 修改这里：检查管理员权限

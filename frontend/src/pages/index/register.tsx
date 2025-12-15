@@ -79,7 +79,7 @@ export function Register(){
             setCanSubmit('formatError');
             return;
         }
-        setCanSubmit('submit');
+        
         setLoading(true);
 
         try {
@@ -98,8 +98,13 @@ export function Register(){
             if(!response.ok){
                 throw new Error(data.message || '注册失败，请联系管理员处理');
             }
-            alert('注册成功！请登录');
-            navigate('/login');
+            setCanSubmit('submit');
+        
+            // 2. 500ms后提示并跳转
+            setTimeout(() => {
+                alert('注册成功！请登录');
+                navigate('/login');
+            }, 500);
         }catch(error:any){
             //设置提交状态为验证错误的loginError
             setCanSubmit('RegisterError');

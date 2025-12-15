@@ -1,5 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/client";
-import { Order } from "generated/prisma/client";
+import { Order } from ".prisma/client";
 
 export class OrderEntity implements Order{
     oid: number;
