@@ -25,27 +25,25 @@ Review
 2.1 模块化设计​
 
 ​```bash
-backend/ # 后端工程根目录​
-├── src/ # 应用源码​
-│   ├── admin/                  # 管理员模块（含 jwt-admin.guard, jwt.strategy）​
-│   ├── auth/                   # 登录注册与 JWT 验证（jwt-auth.guard, jwt.strategy）​
-│   ├── categories/             # 商品分类​
-│   ├── order_items/            # 订单项​
-│   ├── orders/                 # 订单​
-│   ├── owner_guard/            # 资源归属 Guard​
-│   ├── prisma/                 # PrismaModule / PrismaService​
-│   ├── prisma-client-exception/# Prisma 异常过滤器​
-│   ├── products/               # 商品​
-│   ├── seller/                 # 卖家模块（jwt-seller.guard, jwt.strategy）​
-│   ├── users/                  # 用户​
-│   ├── test/                   # 示例控制器​
-│   ├── app.controller.ts / app.module.ts / app.service.ts​
-│   └── main.ts                 # 应用入口​
-├── prisma/ # 数据层​
-│   ├── schema.prisma / schema-fixed.prisma / migrations/ / seed.ts​
-├── dist/   # 构建产物​
-├── Dockerfile.backend / nest-cli.json / tsconfig*.json / package.json / package-lock.json​
-└── generated/ # 生成的 Prisma 类型（源码态）​
+backend/                           # 后端服务（NestJS + Prisma + TypeScript）
+ ├── src/                          # 源代码目录
+ │   ├── admin/                    # 管理员模块
+ │   │   ├── dto/                  # 数据传输对象
+ │   │   └── entity/               # 实体类
+ │   ├── auth/                     # 认证模块（JWT）
+ │   ├── categories/               # 分类模块
+ │   ├── orders/                   # 订单模块
+ │   ├── order_items/              # 订单项模块
+ │   ├── products/                 # 产品模块
+ │   ├── seller/                   # 商家模块
+ │   ├── users/                    # 用户模块
+ │   ├── prisma/                   # Prisma数据库服务
+ │   ├── prisma-client-exception/  # 数据库异常处理
+ │   ├── owner_guard/              # 权限守卫
+ │   └── test/                     # 测试文件
+ ├── prisma/                       # 数据库配置
+ │   └── migrations/               # 数据库迁移历史
+ ├── dist/                         # 编译输出​
 ```
 
 2.2 数据流设计​
@@ -67,23 +65,20 @@ HTTP 请求 → 全局拦截器（日志记录） → 全局守卫（JWT 验证 
 三、前端架构设计​
 3.1 组件化结构​
 ​```bash
-src/
-├── App.css
-├── App.tsx
-├── assets/
-│   └── react.svg
-├── common/                      # 鉴权拦截
-├── pages/                       # 应用页面
-│   ├── admin/                   # 管理端界面    
-│   ├── category_manager/        # 分类管理
-│   ├── index/                   # 登陆注册
-│   └── product_manager/         # 商品管理
-├── index.css
-├── main.tsx
-├── style/
-│   └── style.tsx                # 样式封装
-└── utils/
-    └── api.ts                   # api链接
+frontend/                          # 前端应用（React + Vite + Ant Design）
+ ├── src/                          # 源代码目录
+ │   ├── assets/                   # 静态资源（图片、图标等）
+ │   ├── common/                   # 公共组件/工具
+ │   ├── pages/                    # 页面组件
+ │   │   ├── admin/                # 管理员页面
+ │   │   ├── building/             # 建设中页面
+ │   │   ├── category_manager/     # 分类管理
+ │   │   ├── index/                # 首页
+ │   │   ├── product_manager/      # 产品管理
+ │   │   └── user_manager/         # 用户管理
+ │   ├── style/                    # 样式文件
+ │   └── utils/                    # 工具函数
+ └── public/                       # 公共资源
 ```
 3.2 前端数据流设计​
 用户操作 → 组件事件触发 → 调用工具函数/API请求 → 状态更新（组件状态） → UI重新渲染

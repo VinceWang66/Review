@@ -36,6 +36,9 @@ docker-compose restart​
 
 \# 代码更新后重建服务（重新构建镜像并启动）​
 docker-compose up -d --build​
+
+\# 部署数据库模型​
+docker-compose exec backend npx prisma migrate reset
 ​
 ### 常见问题排查
 
